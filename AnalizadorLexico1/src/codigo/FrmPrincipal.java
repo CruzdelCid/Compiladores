@@ -91,7 +91,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         // TODO add your handling code here:
         File archivo = new File("archivo.txt");
-        PrintWriter escribir; 
+        PrintWriter escribir;
         try {
             escribir = new PrintWriter(archivo);
             escribir.print(txtEntrada.getText());
