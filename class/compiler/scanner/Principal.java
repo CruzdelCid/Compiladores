@@ -15,7 +15,7 @@ public class Principal {
     public static void main(String[] args) { 
         Path path = Paths.get("");
 		String ruta1 = path.toAbsolutePath().toString();
-        String ruta = ruta1 + "/src/codigo/Lexer.flex"; 
+        String ruta = ruta1 + "/compiler/scanner/Lexer.flex"; 
 
         generarLexer(ruta);
     }

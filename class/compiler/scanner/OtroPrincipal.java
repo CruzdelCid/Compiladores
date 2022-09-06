@@ -9,13 +9,15 @@ import java.nio.file.Paths;
 public class OtroPrincipal {
     public static void main(String[] args) {
 
+        String[] Compiled;
+        int j;
         try {
             Path path = Paths.get("");
 		    String ruta = path.toAbsolutePath().toString() + "/compiler/archivo.txt";
             char n = (char) 92; 
             ruta = ruta.replace(n, '/');
             Reader lector = new BufferedReader(new FileReader(ruta));
-            Lexer lexer = new Lexer(lector);
+            Scanner lexer = new Scanner(lector);
 
             while (true) {
                 String tokens;
