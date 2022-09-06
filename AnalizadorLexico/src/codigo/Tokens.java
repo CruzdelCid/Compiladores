@@ -1,22 +1,41 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package codigo;
 
 /**
  *
- * @author Charly Ponce
+ * @author Cruz Daniel
  */
 public enum Tokens {
     Reservadas,
-    Igual,
-    Suma,
-    Resta,
-    Multiplicacion,
+    Digit,
+    Alpha,
+    AlphaNum,
+    Id,
+    HexDigit,
+    HexLiteral,
+    DecimalLiteral,
+    IntLiteral,
+    Asign,
+    AsignSum,
+    AsignSubs,
+    Sum,
+    Substract,
+    Multiplication,
     Division,
-    Identificador,
-    Numero,
+    Percentage,
+    LessThan,
+    GreaterThan,
+    LessEqualThan,
+    GreaterEqualThan,
+    Equal,
+    NotEqual,
+    And,
+    Or,
+    LeftParent,
+    RightParent,
+    LeftBracket,
+    RightBracket,
+    LeftKey,
+    RightKey,
     ERROR
 }
