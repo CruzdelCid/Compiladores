@@ -1,4 +1,4 @@
-import scanner.*;
+//import scanner.*;
 
 public class Compiler {
 

@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package scanner;
+
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
+public class Principal {
+    public static void main(String[] args) { 
+        Path path = Paths.get("");
+		String ruta1 = path.toAbsolutePath().toString();
+        String ruta = ruta1 + "/src/codigo/Lexer.flex"; 
+
+        generarLexer(ruta);
+    }
+    public static void generarLexer(String ruta){
+        File archivo = new File(ruta);
+        JFlex.Main.generate(archivo);
+    }
+}
