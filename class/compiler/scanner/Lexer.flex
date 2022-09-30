@@ -1,5 +1,6 @@
 package scanner;
 import static scanner.Tokens.*;
+
 %%
 
 %public
@@ -24,22 +25,21 @@ espacio = [ ,\t,\r,\n]+
     public int column;
 %}
 
-
 %%
 
 /* palabras reservadas*/
-void |
-int |
-boolean |
-if |
-else |
-for |
-return |
-break |
-continue |
-callout |
-true |
-false  {lexeme=yytext(); column=yycolumn; line=yyline; return Reservadas;}
+void                {lexeme=yytext(); column=yycolumn; line=yyline; return Void;}
+int                 {lexeme=yytext(); column=yycolumn; line=yyline; return Int;}
+boolean             {lexeme=yytext(); column=yycolumn; line=yyline; return Boolean;}
+if                  {lexeme=yytext(); column=yycolumn; line=yyline; return If;}
+else                {lexeme=yytext(); column=yycolumn; line=yyline; return Else;}
+for                 {lexeme=yytext(); column=yycolumn; line=yyline; return For;}
+return              {lexeme=yytext(); column=yycolumn; line=yyline; return Return;}
+break               {lexeme=yytext(); column=yycolumn; line=yyline; return Break;}
+continue            {lexeme=yytext(); column=yycolumn; line=yyline; return Continue;}
+callout             {lexeme=yytext(); column=yycolumn; line=yyline; return Callout;}
+true                {lexeme=yytext(); column=yycolumn; line=yyline; return True;}
+false               {lexeme=yytext(); column=yycolumn; line=yyline; return False;}
 
 /* Espacios */
 

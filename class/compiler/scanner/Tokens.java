@@ -6,7 +6,19 @@ package scanner;
  * @author Cruz Daniel
  */
 public enum Tokens {
-    Reservadas,
+    Void,
+    Int,
+    Boolean,
+    If,
+    Else,
+    For,
+    Return,
+    Break,
+    Continue,
+    Callout,
+    True,
+    False,
+    
     Digit,
     Alpha,
     AlphaNum,
