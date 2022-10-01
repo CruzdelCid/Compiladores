@@ -1,0 +1,237 @@
+package tarea2;
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+	public String resultado="";
+	public Nodo padre;
+	public int contador = 1;
+    @Override
+    public void syntax_error(Symbol s){
+        System.out.println("Error Sintactico en la Linea " + (s.right+1) +" Columna "+s.left+ ". Identificador " +s.value + " no reconocido." );
+    }
+
+    @Override
+    public void unrecovered_syntax_error(Symbol s){
+        //System.out.println("Error Sintactico en la Linea " + (s.right+1)+ "Columna "+s.left+". Identificador " + s.value + " no reconocido.");
+		System.out.println(s);
+	}
+:}
+
+action code
+{:
+
+:}
+
+terminal igualacion, diferenciacion, menor_que, menor_o_igual, mayor_que, mayor_o_igual;
+terminal or, nor, and, nand, xor, not;
+terminal suma, resta, multiplicacion, division, potencia, Dpar, Ipar;
+terminal false_,falso,true_,verdadero, null_;
+terminal String numero, decimal, tstring, tchar;
+
+non terminal EXP, E;
+
+precedence left or, nor, xor;
+precedence left and, nand;
+precedence right not;
+precedence left igualacion, diferenciacion, menor_que, menor_o_igual, mayor_que, mayor_o_igual;
+precedence left suma, resta;
+precedence left multiplicacion, division;
+precedence right potencia;
+
+start with EXP;
+		
+EXP::=E:e{:
+	Nodo tmp = new Nodo("EXP");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)e);
+	parser.padre = (Nodo) tmp;
+	System.out.println("OK");
+    RESULT=tmp;
+:};
+
+E::=E:a or E:b{:
+	Nodo tmp = new Nodo("||");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a nor E:b{:
+	Nodo tmp = new Nodo("!||");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a xor E:b{:
+	Nodo tmp = new Nodo("&|");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a nand E:b{:
+	Nodo tmp = new Nodo("!&&");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a and E:b{:
+	Nodo tmp = new Nodo("&&");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+| not E:a{:
+	Nodo tmp = new Nodo("!");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+    RESULT=tmp;
+:}
+| resta E:a{:
+	Nodo tmp = new Nodo("-");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+    RESULT=tmp;
+:}
+|E:a igualacion E:b{:
+	Nodo tmp = new Nodo("==");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a diferenciacion E:b{:
+	Nodo tmp = new Nodo("!=");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a menor_que E:b{:
+	Nodo tmp = new Nodo("<");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a menor_o_igual E:b{:
+	Nodo tmp = new Nodo("<=");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a mayor_que E:b{:
+	Nodo tmp = new Nodo(">");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a mayor_o_igual E:b{:
+	Nodo tmp = new Nodo(">=");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a suma E:b{:
+	Nodo tmp = new Nodo("+");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a resta E:b{:
+	Nodo tmp = new Nodo("-");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a multiplicacion E:b{:
+	Nodo tmp = new Nodo("*");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a division E:b{:
+	Nodo tmp = new Nodo("/");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|E:a potencia E:b{:
+	Nodo tmp = new Nodo("^");
+    tmp.setNumNodo(parser.contador++);
+    tmp.addHijo((Nodo)a);
+	tmp.addHijo((Nodo)b);
+    RESULT=tmp;
+:}
+|Ipar E:a Dpar{:
+    RESULT=a;
+:}
+|numero:a {: 
+    Nodo tmp = new Nodo("numero");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor(a.toString());
+    RESULT=tmp;
+:}
+|decimal:a {: 
+    Nodo tmp = new Nodo("decimal");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor(a.toString());
+    RESULT=tmp;
+:}
+|tchar:a {: 
+    Nodo tmp = new Nodo("tchar");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor(a.toString());
+    RESULT=tmp;
+:}
+|tstring:a {: 
+    Nodo tmp = new Nodo("tstring");
+    tmp.setNumNodo(parser.contador++);
+    //tmp.setValor(a.toString().replaceAll("\"", "\\\\\""));
+	tmp.setValor(a.toString().replaceAll("\"", ""));
+    RESULT=tmp;
+:}
+|true_:a {: 
+    Nodo tmp = new Nodo("true");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor("true");
+    RESULT=tmp;
+:}
+|verdadero:a {: 
+    Nodo tmp = new Nodo("verdadero");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor("verdadero");
+    RESULT=tmp;
+:}
+|false_:a {: 
+    Nodo tmp = new Nodo("false");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor("false");
+    RESULT=tmp;
+:}
+|falso:a {: 
+    Nodo tmp = new Nodo("falso");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor("falso");
+    RESULT=tmp;
+:}
+|null_:a {: 
+    Nodo tmp = new Nodo("null");
+    tmp.setNumNodo(parser.contador++);
+    tmp.setValor("null");
+    RESULT=tmp;
+:};
+
+
+

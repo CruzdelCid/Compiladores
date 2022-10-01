@@ -1,0 +1,30 @@
+
+INICIO -> SENTENCIAS
+
+SENTENCIAS -> SENTENCIAS SENTENCIA
+			| SENTENCIA
+
+SENTENCIA -> TIPO IDS puntoycoma 
+
+IDS -> IDS coma ID
+	| ID
+
+ID -> id
+	| id igual VALOR
+
+TIPO -> int_
+		| double_
+		| string_
+		| char_
+
+VALOR -> EXP
+		|tstring
+		|tchar
+		
+EXP -> E
+
+E -> E mas E
+	|E menos E
+	|E por E
+	|E div E
+	|numero

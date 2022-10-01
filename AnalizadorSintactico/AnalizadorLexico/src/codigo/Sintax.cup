@@ -26,8 +26,7 @@ non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
 start with INICIO;
 
 INICIO ::= 
-    Int Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c |
-    Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c
+    Int Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c 
 ;
 SENTENCIA ::= 
     SENTENCIA DECLARACION |

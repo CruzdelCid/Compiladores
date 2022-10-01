@@ -1,0 +1,8 @@
+digraph G {node[shape=box, style=filled, color=blanchedalmond]; edge[color=chocolate3];rankdir=UD 
+
+"4_EXP -> null"->"3_+ -> null"
+"3_+ -> null"->"1_numero -> 5"
+"3_+ -> null"->"2_numero -> 5"
+
+
+}
