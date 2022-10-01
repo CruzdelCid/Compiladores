@@ -17,9 +17,9 @@ import java.nio.file.Paths;
  */
 public class Principal {
     public static void main(String[] args) throws Exception {
-        String ruta1 = "E:/Documentos/NetBeansProjects/AnalizadorLexico/src/codigo/Lexer.flex";
-        String ruta2 = "E:/Documentos/NetBeansProjects/AnalizadorLexico/src/codigo/LexerCup.flex";
-        String[] rutaS = {"-parser", "Sintax", "E:/Documentos/NetBeansProjects/AnalizadorLexico/src/codigo/Sintax.cup"};
+        String ruta1 = "C:/Users/chuzd/Compiladores/AnalizadorSintactico/AnalizadorLexico/src/codigo/Lexer.flex";
+        String ruta2 = "C:/Users/chuzd/Compiladores/AnalizadorSintactico/AnalizadorLexico/src/codigo/LexerCup.flex";
+        String[] rutaS = {"-parser", "Sintax", "C:/Users/chuzd/Compiladores/AnalizadorSintactico/AnalizadorLexico/src/codigo/Sintax.cup"};
         generar(ruta1, ruta2, rutaS);
     }
     public static void generar(String ruta1, String ruta2, String[] rutaS) throws IOException, Exception{
@@ -29,7 +29,8 @@ public class Principal {
         archivo = new File(ruta2);
         JFlex.Main.generate(archivo);
         java_cup.Main.main(rutaS);
-        
+
+        /* 
         Path rutaSym = Paths.get("E:/Documentos/NetBeansProjects/AnalizadorLexico/src/codigo/sym.java");
         if (Files.exists(rutaSym)) {
             Files.delete(rutaSym);
@@ -46,5 +47,6 @@ public class Principal {
                 Paths.get("E:/Documentos/NetBeansProjects/AnalizadorLexico/Sintax.java"), 
                 Paths.get("E:/Documentos/NetBeansProjects/AnalizadorLexico/src/codigo/Sintax.java")
         );
+        */
     }
 }
