@@ -1,0 +1,8 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "AnalizadorLexico/librerias/java_cup.jar",
+        "AnalizadorLexico/librerias/java-cup-11a.jar",
+        "AnalizadorLexico/librerias/JFlex.jar"
+    ]
+}

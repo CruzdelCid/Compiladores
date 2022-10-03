@@ -1,6 +1,8 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "compiler/libraries/JFlex.jar"
+        "compiler/libraries/JFlex.jar",
+        "compiler/libraries/java_cup.jar",
+        "compiler/libraries/java-cup-11a.jar"
     ]
 }

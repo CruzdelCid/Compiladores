@@ -19,7 +19,7 @@ public class pprincipal {
         String expr = "";
 
         try {
-            File archivo = new File("C:/Users/chuzd/Compiladores/AnalizadorSintactico/AnalizadorLexico/archivo.txt");
+            File archivo = new File("C:/Users/danie/Desktop/Compiladores/AnalizadorSintactico/AnalizadorLexico/archivo.txt");
             Scanner myReader = new Scanner(archivo);
             while (myReader.hasNextLine()) {
               String data = myReader.nextLine();
@@ -146,7 +146,7 @@ public class pprincipal {
         
 
         try {
-            File archivo = new File("C:/Users/chuzd/Compiladores/AnalizadorSintactico/AnalizadorLexico/archivo.txt");
+            File archivo = new File("C:/Users/danie/Desktop/Compiladores/AnalizadorSintactico/AnalizadorLexico/archivo.txt");
             Scanner myReader = new Scanner(archivo);
             while (myReader.hasNextLine()) {
               String data = myReader.nextLine();
