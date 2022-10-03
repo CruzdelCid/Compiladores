@@ -1,4 +1,4 @@
-package scanner;
+package parser;
 import java_cup.runtime.Symbol;
 
 %%
@@ -18,7 +18,7 @@ hex_digit = [0-9a-fA-F]
 hex_literal = 0[xX]{hex_digit}({hex_digit})*
 decimal_literal =  {digit}({digit})*
 espacio = [ \t\r\n]+
-char_literal = '[^'\\\n]|{ES}'
+// char _ literal requerido  
 
 %{
     private Symbol symbol(int type, Object value){
@@ -33,9 +33,10 @@ char_literal = '[^'\\\n]|{ES}'
 
 /* palabras reservadas*/
 class               {return new Symbol(sym.Class, yychar, yyline, yytext());}      
+Program             {return new Symbol(sym.Program, yychar, yyline, yytext());}      
 void                {return new Symbol(sym.Void, yychar, yyline, yytext());}      
 int                 {return new Symbol(sym.Int, yychar, yyline, yytext());}      
-boolean             {return new Symbol(sym.Boolean, yychar, yyline, yytext());}      
+boolean             {return new Symbol(sym.Boolean, yychar, yyline, yytext());}
 if                  {return new Symbol(sym.If, yychar, yyline, yytext());}      
 else                {return new Symbol(sym.Else, yychar, yyline, yytext());}      
 for                 {return new Symbol(sym.For, yychar, yyline, yytext());}      
@@ -44,7 +45,8 @@ break               {return new Symbol(sym.Break, yychar, yyline, yytext());}
 continue            {return new Symbol(sym.Continue, yychar, yyline, yytext());}      
 callout             {return new Symbol(sym.Callout, yychar, yyline, yytext());}      
 true                {return new Symbol(sym.True, yychar, yyline, yytext());}      
-false               {return new Symbol(sym.False, yychar, yyline, yytext());}      
+false               {return new Symbol(sym.False, yychar, yyline, yytext());}
+string              {return new Symbol(sym.String, yychar, yyline, yytext());}      
 
 /* Espacios */
 
@@ -58,7 +60,6 @@ false               {return new Symbol(sym.False, yychar, yyline, yytext());}
 {hex_digit}         {return new Symbol(sym.HexDigit, yychar, yyline, yytext());} 
 {hex_literal}       {return new Symbol(sym.HexLiteral, yychar, yyline, yytext());} 
 {decimal_literal}   {return new Symbol(sym.DecimalLiteral, yychar, yyline, yytext());} 
-{char_literal}      {return new Symbol(sym.CharLiteral, yychar, yyline, yytext());} 
 
 /* comparadores y operadores*/
 ","                 {return new Symbol(sym.Comma, yychar, yyline, yytext());} 
