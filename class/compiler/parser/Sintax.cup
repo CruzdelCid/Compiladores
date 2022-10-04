@@ -15,16 +15,75 @@ parser code
 }
 :};
 
-terminal Linea, Comillas, T_dato, Int, Cadena, If, Else, Do, While, For,
-    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional,
-    Op_atribucion, Op_incremento, Op_booleano, Parentesis_a, Parentesis_c,
-    Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador,
-    Numero, ERROR;
-non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
-    WHILE, DO_WHILE, FOR, SENTENCIA_BOOLEANA, SENTENCIA_FOR;
+terminal Class, Program, Void, Int, Boolean, If, Else, For, Return, Break, Continue,
+    True, False, String, Digit, Alpha, Id, HexDigit, HexLiteral, DecimalLiteral, 
+    Asign, AsignAdd, AsignSubs, Add, Substract, Multiplication, Division, Percentage, 
+    LessThan, GreaterThan, LessEqualThan, GreaterEqualThan, Equal, NotEqual, And, Or, 
+    SemiColom, LeftParent, RightParent, LeftBracket, RightBracket, LeftKey, RightKey,
+    ParentOpenClose, BracketOpenClose, KeyOpenClose,
+    StringLiteral, ERROR; 
+
+non terminal INICIO, PROGRAM, FIELD_DECL, METHOD_DECL, 
+;
+
+precedence left Add, Substract, Multiplication, Division, Percentage, LessThan, GreaterThan, LessEqualThan, 
+GreaterEqualThan, Equal, NotEqual, And, Or; 
 
 start with INICIO;
 
+INICIO ::= PROGRAM 
+;
+PROGRAM ::= Class Program KeyOpenClose
+        | Class Program LeftKey FIELD_DECL METHOD_DECL RightKey
+        | Class Program LeftKey METHOD_DECL RightKey
+        | Class Program LeftKey FIELD_DECL RightKey
+;
+
+
+PROGRAM ::= Class Program KeyOpenClose
+        | Class Program LeftKey FIELD_FIELD_DECL
+;
+
+FIELD_FIELD_DECL ::= FIELD_DECL FIELD_FIELD_DECL
+                | METHOD_DECL METHOD_METHOD_DECL
+                | RightKey
+;
+
+METHOD_METHOD_DECL ::= METHOD_DECL METHOD_METHOD_DECL
+                | RightKey
+
+
+FIELD_DECL ::= TYPE DECL
+;
+
+DECL ::= Id FIELD_CLOSE 
+        | Id LeftBracket INT_LITERAL RightBracket FIELD_CLOSE
+; 
+
+FIELD_CLOSE ::= Comma DECL 
+		| SemiColom 
+; 
+
+
+
+METHOD_DECL ::= TYPE Id LeftParent M_DECL 
+            | Void Id LeftParent M_DECL  
+            | TYPE Id ParentOpenClose BLOCK
+            | Void Id ParentOpenClose BLOCK
+;
+M_DECL ::= TYPE Id RightParent BLOCK
+        | TYPE Id Comma M_DECL 
+; 
+
+
+
+// HAY QUE HACER RECURSIVO VAR_DECL Y STATEMENT
+BLOCK ::= LeftKey VAR_DECL STATEMENT RightKey
+        | LeftKey STATEMENT RightKey
+; 
+
+
+/*
 INICIO ::= 
     Int Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c 
 ;
@@ -85,3 +144,5 @@ DECLARACION_FOR ::=
     Identificador Op_incremento | 
     Op_incremento Identificador
 ;
+*/
+

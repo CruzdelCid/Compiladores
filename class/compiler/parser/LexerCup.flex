@@ -89,6 +89,10 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 "]"                 {return new Symbol(sym.RightBracket, yychar, yyline, yytext());} 
 "{"                 {return new Symbol(sym.LeftKey, yychar, yyline, yytext());} 
 "}"                 {return new Symbol(sym.RightKey, yychar, yyline, yytext());} 
+"()"                {return new Symbol(sym.ParentOpenClose, yychar, yyline, yytext());} 
+"[]"                {return new Symbol(sym.BracketOpenClose, yychar, yyline, yytext());} 
+"{}"                {return new Symbol(sym.KeyOpenClose, yychar, yyline, yytext());} 
+
 
 <STRING> {
     \"              {yybegin(YYINITIAL); 
