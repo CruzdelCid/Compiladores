@@ -1,0 +1,4 @@
+QUEHACERES:
+1. Crear un metodo para parsing
+2. Crear un metodo para scanning
+3. Crear el AST

@@ -54,8 +54,8 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 "//".* {/*Ignore*/}
 
 /* indentificadores*/
-{digit}             {return new Symbol(sym.Digit, yychar, yyline, yytext());} 
-{alpha}             {return new Symbol(sym.Alpha, yychar, yyline, yytext());} 
+/* {digit}             {return new Symbol(sym.Digit, yychar, yyline, yytext());} 
+{alpha}             {return new Symbol(sym.Alpha, yychar, yyline, yytext());} */
 {id}                {return new Symbol(sym.Id, yychar, yyline, yytext());} 
 {hex_digit}         {return new Symbol(sym.HexDigit, yychar, yyline, yytext());} 
 {hex_literal}       {return new Symbol(sym.HexLiteral, yychar, yyline, yytext());} 
@@ -95,7 +95,7 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 "{}"                {return new Symbol(sym.KeyOpenClose, yychar, yyline, yytext());} 
 
 
-<STRING> {
+/* <STRING> {
     \"              {yybegin(YYINITIAL); 
                      return new Symbol(sym.StringLiteral, yychar, yyline, string.toString();)}
     [^\n\r\"\\]+    { string.append( yytext() ); }
@@ -104,7 +104,7 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
     \\r             { string.append(’\r’); }
     \\\"            { string.append("\""); }
     \\              { string.append(’\\’); }
-}
+} */
 
                     
 
