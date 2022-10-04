@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class OtroPrincipal {
+public class Test {
     public static void main(String[] args) {
 
         String[] Compiled;

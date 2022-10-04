@@ -1,27 +1,29 @@
 package parser;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java_cup.runtime.Symbol;
-import javax.swing.JFileChooser;
 import java.util.Scanner; // Import the Scanner class to read text files
 
 
-public class pprincipal {
+public class Test {
     
     public static void main(String[] args) throws IOException {
     
         String ST = "";
-        
+        Path path = Paths.get("");
+        String ruta = path.toAbsolutePath().toString() + "/compiler/archivo.txt"; // Es necesario cambiar ruta desde CMD
+        char caracter = (char) 92; 
+        ruta = ruta.replace(caracter, '/');
+        System.out.println(ruta);
 
         try {
-            File archivo = new File("C:/Users/danie/Desktop/Compiladores/class/compiler/archivo.txt");
+            File archivo = new File(ruta);
             Scanner myReader = new Scanner(archivo);
             while (myReader.hasNextLine()) {
               String data = myReader.nextLine();
