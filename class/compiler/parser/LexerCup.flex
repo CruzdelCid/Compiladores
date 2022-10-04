@@ -70,7 +70,7 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 "-"                 {return new Symbol(sym.Substract, yychar, yyline, yytext());}  
 "*"                 {return new Symbol(sym.Multiplication, yychar, yyline, yytext());}  
 "/"                 {return new Symbol(sym.Division, yychar, yyline, yytext());}  
-"%"                 {return new Symbol(sym.Percentage, yychar, yyline, yytext());}  
+"%"                 {return new Symbol(sym.Mod, yychar, yyline, yytext());}  
 "<"                 {return new Symbol(sym.LessThan, yychar, yyline, yytext());}  
 ">"                 {return new Symbol(sym.GreaterThan, yychar, yyline, yytext());}  
 "<="                {return new Symbol(sym.LessEqualThan, yychar, yyline, yytext());}  
@@ -80,6 +80,7 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 "&&"                {return new Symbol(sym.And, yychar, yyline, yytext());}  
 "||"                {return new Symbol(sym.Or, yychar, yyline, yytext());}  
 ";"                 {return new Symbol(sym.SemiColom, yychar, yyline, yytext());}
+"!"                 {return new Symbol(sym.Exclam, yychar, yyline, yytext());}
 
 
 /* agrupaciones*/

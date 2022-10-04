@@ -15,43 +15,41 @@ parser code
 }
 :};
 
-terminal Class, Program, Void, Int, Boolean, If, Else, For, Return, Break, Continue,
+terminal Class, Program, Void, Int, Boolean, If, Else, For, Return, Break, Continue, 
     True, False, String, Digit, Alpha, Id, HexDigit, HexLiteral, DecimalLiteral, 
-    Asign, AsignAdd, AsignSubs, Add, Substract, Multiplication, Division, Percentage, 
+    Asign, AsignAdd, AsignSubs, Add, Substract, Multiplication, Division, Mod, 
     LessThan, GreaterThan, LessEqualThan, GreaterEqualThan, Equal, NotEqual, And, Or, 
     SemiColom, LeftParent, RightParent, LeftBracket, RightBracket, LeftKey, RightKey,
     ParentOpenClose, BracketOpenClose, KeyOpenClose,
-    StringLiteral, ERROR; 
+    StringLiteral, Callout, Exclam, Comma, ERROR; 
 
-non terminal INICIO, PROGRAM, FIELD_DECL, METHOD_DECL, 
-;
+non terminal INICIO, PROGRAM, PROGRAM_FIELD_DECL, PROGRAM_METHOD_DECL, FIELD_DECL, DECL, 
+    FIELD_CLOSE, METHOD_DECL, M_DECL, BLOCK, BLOCK_VAR_DECL, BLOCK_STATEMENT, VAR_DECL, 
+    VAR_ID, TYPE, STATEMENT, ELSE_BLOCK, RETURN_EXPR, ASSIGN_OP, METHOD_CALL, METHOD_CALL_EXPR, 
+    METHOD_CALL_CALLOUT, METHOD_NAME, LOCATION, LOCATION_EXPR, EXPR, CALLOUT_ARG, BIN_OP, 
+    ARITH_OP, REL_OP, EQ_OP, COND_OP, LITERAL, INT_LITERAL, BOOL_LITERAL
+; 
 
-precedence left Add, Substract, Multiplication, Division, Percentage, LessThan, GreaterThan, LessEqualThan, 
+precedence left Add, Substract, Multiplication, Division, Mod, LessThan, GreaterThan, LessEqualThan, 
 GreaterEqualThan, Equal, NotEqual, And, Or; 
 
 start with INICIO;
 
 INICIO ::= PROGRAM 
 ;
-PROGRAM ::= Class Program KeyOpenClose
-        | Class Program LeftKey FIELD_DECL METHOD_DECL RightKey
-        | Class Program LeftKey METHOD_DECL RightKey
-        | Class Program LeftKey FIELD_DECL RightKey
-;
-
 
 PROGRAM ::= Class Program KeyOpenClose
-        | Class Program LeftKey FIELD_FIELD_DECL
+        | Class Program LeftKey PROGRAM_FIELD_DECL
 ;
 
-FIELD_FIELD_DECL ::= FIELD_DECL FIELD_FIELD_DECL
-                | METHOD_DECL METHOD_METHOD_DECL
+PROGRAM_FIELD_DECL ::= FIELD_DECL PROGRAM_FIELD_DECL
+                | METHOD_DECL PROGRAM_METHOD_DECL
                 | RightKey
 ;
 
-METHOD_METHOD_DECL ::= METHOD_DECL METHOD_METHOD_DECL
+PROGRAM_METHOD_DECL ::= METHOD_DECL PROGRAM_METHOD_DECL
                 | RightKey
-
+;
 
 FIELD_DECL ::= TYPE DECL
 ;
@@ -64,8 +62,6 @@ FIELD_CLOSE ::= Comma DECL
 		| SemiColom 
 ; 
 
-
-
 METHOD_DECL ::= TYPE Id LeftParent M_DECL 
             | Void Id LeftParent M_DECL  
             | TYPE Id ParentOpenClose BLOCK
@@ -75,74 +71,126 @@ M_DECL ::= TYPE Id RightParent BLOCK
         | TYPE Id Comma M_DECL 
 ; 
 
-
-
 // HAY QUE HACER RECURSIVO VAR_DECL Y STATEMENT
-BLOCK ::= LeftKey VAR_DECL STATEMENT RightKey
-        | LeftKey STATEMENT RightKey
+BLOCK ::= KeyOpenClose
+        | LeftKey BLOCK_VAR_DECL 
+;
+
+BLOCK_VAR_DECL ::= VAR_DECL BLOCK_VAR_DECL
+            | STATEMENT BLOCK_STATEMENT
+            | RightKey
+;
+
+BLOCK_STATEMENT ::= STATEMENT BLOCK_STATEMENT
+                | RightKey
+;
+
+VAR_DECL ::= TYPE VAR_ID
 ; 
 
+VAR_ID ::= Id Comma VAR_ID 
+        | Id SemiColom
+;
 
-/*
-INICIO ::= 
-    Int Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c 
-;
-SENTENCIA ::= 
-    SENTENCIA DECLARACION |
-    DECLARACION |
-    SENTENCIA IF | 
-    IF |
-    SENTENCIA IF_ELSE |
-    IF_ELSE |
-    SENTENCIA WHILE |
-    WHILE |
-    SENTENCIA DO_WHILE
-    DO_WHILE |
-    SENTENCIA FOR |
-    FOR
-;
-DECLARACION ::= 
-    Int Identificador P_coma | 
-    Int Identificador Op_atribucion Numero P_coma |
-    Int Identificador Igual Numero P_coma |
-    Int Identificador Op_incremento P_coma | 
-    Int Op_incremento Identificador P_coma | 
-    T_dato Identificador P_coma | 
-    T_dato Identificador Op_atribucion Numero P_coma |
-    T_dato Identificador Igual Numero P_coma |
-    T_dato Identificador Op_incremento P_coma | 
-    T_dato Op_incremento Identificador P_coma | 
-    Cadena Identificador Op_atribucion Comillas Comillas P_coma |
-    Cadena Identificador Igual Comillas Comillas P_coma |
-    Cadena Identificador Op_atribucion Comillas Identificador Comillas P_coma |
-    Cadena Identificador Igual Comillas Identificador Comillas P_coma
-;
-IF ::= If Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Llave_a SENTENCIA Llave_c
-;
-SENTENCIA_BOOLEANA ::= 
-    Op_booleano | 
-    Identificador Op_relacional Op_booleano |
-    Identificador Op_relacional Numero |
-    Identificador Op_relacional Identificador |
-    Identificador Op_relacional Comillas Comillas |
-    Identificador Op_relacional Comillas Identificador Comillas
-;
-IF_ELSE ::= If Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Llave_a SENTENCIA Llave_c Else Llave_a SENTENCIA Llave_c
-;
-WHILE ::= While Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Llave_a SENTENCIA Llave_c
-;
-DO_WHILE ::= Do Llave_a SENTENCIA Llave_c While Parentesis_a SENTENCIA_BOOLEANA Parentesis_c P_coma
-;
-FOR ::= For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a SENTENCIA Llave_c
-;
-SENTENCIA_FOR ::=
-    T_dato Identificador Igual Numero P_coma SENTENCIA_BOOLEANA P_coma DECLARACION_FOR |
-    Identificador Igual Numero P_coma SENTENCIA_BOOLEANA P_coma DECLARACION_FOR
-;
-DECLARACION_FOR ::= 
-    Identificador Op_atribucion Numero |
-    Identificador Op_incremento | 
-    Op_incremento Identificador
-;
-*/
+TYPE ::= Int 
+    | Boolean 
+; 
 
+STATEMENT ::= LOCATION ASSIGN_OP EXPR SemiColom 
+            | METHOD_CALL SemiColom
+            | If LeftParent EXPR RightParent ELSE_BLOCK 
+            | For Id Asign EXPR Comma EXPR BLOCK
+            | Return RETURN_EXPR 
+            | Break SemiColom
+            | Continue SemiColom
+            | BLOCK 
+;
+
+ELSE_BLOCK ::= Else BLOCK
+            |
+;
+
+RETURN_EXPR ::= EXPR SemiColom
+            | SemiColom
+; 
+
+ASSIGN_OP ::= Asign
+            | AsignAdd
+            | AsignSubs
+; 
+
+METHOD_CALL ::= METHOD_NAME ParentOpenClose
+            | METHOD_NAME LeftParent METHOD_CALL_EXPR
+            | Callout LeftParent StringLiteral RightParent
+            | Callout LeftParent StringLiteral METHOD_CALL_CALLOUT
+; 
+
+METHOD_CALL_EXPR ::= EXPR Comma METHOD_CALL_EXPR 
+                | EXPR RightParent
+;
+
+METHOD_CALL_CALLOUT ::= CALLOUT_ARG Comma METHOD_CALL_CALLOUT
+                    | CALLOUT_ARG RightParent
+; 
+
+METHOD_NAME ::= Id
+; 
+
+LOCATION ::= Id LOCATION_EXPR
+; 
+
+LOCATION_EXPR ::= LeftBracket EXPR RightBracket
+                | 
+; 
+
+EXPR ::= LOCATION 
+        | METHOD_CALL
+        | LITERAL 
+        | EXPR BIN_OP EXPR
+        | Substract EXPR
+        | Exclam EXPR
+        | LeftParent EXPR RightParent
+; 
+
+CALLOUT_ARG ::= EXPR 
+            | StringLiteral
+; 
+
+BIN_OP ::= ARITH_OP 
+        | REL_OP
+        | EQ_OP
+        | COND_OP
+; 
+
+ARITH_OP ::= Add 
+        | Substract
+        | Multiplication
+        | Division
+        | Mod
+; 
+
+REL_OP ::= LessThan 
+        | GreaterThan
+        | LessEqualThan
+        | GreaterEqualThan
+;
+
+EQ_OP ::= Equal
+        | NotEqual
+;
+
+COND_OP ::= And
+        | Or
+; 
+
+LITERAL ::= INT_LITERAL 
+        | BOOL_LITERAL
+; 
+
+INT_LITERAL ::= DecimalLiteral
+            | HexLiteral
+; 
+
+BOOL_LITERAL ::= True
+            | False 
+; 
