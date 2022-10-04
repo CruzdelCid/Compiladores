@@ -65,6 +65,42 @@ public class Compiler {
                         System.out.println("Error a ejecutar el Scanner");
                     }
                 }
+
+                if (args[2].equals("parser")) {
+                    // llamamos una instancia del parser
+                    System.out.println("stage: parsing\n");
+
+                    try {
+                        Path path = Paths.get("");
+                        String ruta = path.toAbsolutePath().toString() + "/" + filename; // Es necesario cambiar ruta desde CMD
+                        char caracter = (char) 92; 
+                        ruta = ruta.replace(caracter, '/');
+                        System.out.println(ruta);
+                        Reader lector = new BufferedReader(new FileReader(ruta));
+                        Scanner lexer = new Scanner(lector);
+            
+                        while (true) {
+                            String tokens;
+                            try {
+                                tokens = lexer.yylex().toString();
+            
+                            } catch (Exception e) {
+                                System.out.println("FIN");
+                                return;
+                            }
+                            if(tokens.equals("ERROR")){
+                                System.out.println(tokens + ": " + lexer.lexeme);
+                                System.out.println("Linea: " + lexer.line + " Columna: " + lexer.column);
+                                System.out.println(" ");
+                            }
+                        }
+
+                    } catch (FileNotFoundException ex) {
+                        System.out.println(ex);
+                        System.out.println("Error a ejecutar el Scanner");
+                    }
+                }
+
                 else {
                     System.out.println("Invalid <target>");
                 }
