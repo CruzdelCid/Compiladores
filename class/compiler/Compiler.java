@@ -1,4 +1,6 @@
 import scanner.*;
+import parser.*;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -42,7 +44,7 @@ public class Compiler {
                         ruta = ruta.replace(caracter, '/');
                         System.out.println(ruta);
                         Reader lector = new BufferedReader(new FileReader(ruta));
-                        Scanner lexer = new Scanner(lector);
+                        Scanner1 lexer = new Scanner1(lector);
             
                         while (true) {
                             String tokens;
@@ -77,7 +79,7 @@ public class Compiler {
                         ruta = ruta.replace(caracter, '/');
                         System.out.println(ruta);
                         Reader lector = new BufferedReader(new FileReader(ruta));
-                        Scanner lexer = new Scanner(lector);
+                        Scanner1 lexer = new Scanner1(lector);
             
                         while (true) {
                             String tokens;
@@ -124,7 +126,7 @@ public class Compiler {
                         ruta = ruta.replace(caracter, '/');
                         System.out.println(ruta);
                         Reader lector = new BufferedReader(new FileReader(ruta));
-                        Scanner lexer = new Scanner(lector);
+                        Scanner1 lexer = new Scanner1(lector);
             
                         while (true) {
                             String tokens;

@@ -4,11 +4,14 @@ class Program {
         a = 335;
         b = 333;
         c = 337;
+
     }
 
-    int Hueco() {
+    int prueba() {
         boolean daniel, mario;
         daniel = falso;
         mario = true;
+
+        return mario;
     }
 }

@@ -1,0 +1,61 @@
+// Id 
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+// Coma 
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(","); 
+        tmp.addHijo((Nodo) C);
+
+
+
+// Void 
+        Nodo V = new Nodo("Void"); 
+        V.setNumNodo(parser.contador++);
+        V.setValor("void"); 
+        tmp.addHijo((Nodo) V);
+
+// KeyOpenClose
+        Nodo KOC = new Nodo("KeyOpenClose"); 
+        KOC.setNumNodo(parser.contador++);
+        KOC.setValor("{}"); 
+        tmp.addHijo((Nodo) KOC);
+
+// SemiColom
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+
+// LeftParent
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+
+// RightParent
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+
+// ParentOpenClose
+        Nodo POC = new Nodo("ParentOpenClose"); 
+        POC.setNumNodo(parser.contador++);
+        POC.setValor("()"); 
+        tmp.addHijo((Nodo) POC);
+
+// LeftBracket
+        Nodo LB = new Nodo("LeftBracket"); 
+        LB.setNumNodo(parser.contador++);
+        LB.setValor("["; 
+        tmp.addHijo((Nodo) LB);
+
+// RightBracket
+        Nodo RB = new Nodo("RightBracket"); 
+        RB.setNumNodo(parser.contador++);
+        RB.setValor("]"; 
+        tmp.addHijo((Nodo) RB);

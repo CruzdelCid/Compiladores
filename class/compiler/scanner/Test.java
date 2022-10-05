@@ -17,7 +17,7 @@ public class Test {
             char n = (char) 92; 
             ruta = ruta.replace(n, '/');
             Reader lector = new BufferedReader(new FileReader(ruta));
-            Scanner lexer = new Scanner(lector);
+            Scanner1 lexer = new Scanner1(lector);
 
             while (true) {
                 String tokens;
