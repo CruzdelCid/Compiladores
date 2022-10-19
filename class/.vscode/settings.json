@@ -3,6 +3,19 @@
         "lib/**/*.jar",
         "compiler/libraries/java_cup.jar",
         "compiler/libraries/java-cup-11a.jar",
-        "compiler/libraries/JFlex.jar"
-    ]
+        "compiler/libraries/JFlex.jar",
+        "compiler/java_cup.jar",
+        "compiler/java-cup-11a.jar",
+        "compiler/JFlex.jar"
+    ],
+    "configurations": [
+        {
+            "type": "java",
+            "request": "launch",
+            "vmArgs": "--foo arg1 --bar arg2",
+            "mainClass": "baz.Klass",
+            "projectName": "baz"
+        }
+    ],
+    "compounds": []
 }

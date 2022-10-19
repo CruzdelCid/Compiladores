@@ -18,15 +18,41 @@ import java.util.Scanner; // Import the Scanner class to read text files
 
 
 public class Compiler {
+    public static void scanear(String filename, Boolean debug) throws FileNotFoundException {
+        Path path = Paths.get("");
+        String ruta = path.toAbsolutePath().toString() + "/compiler/" + filename; // Es necesario cambiar ruta desde CMD
+        char caracter = (char) 92; 
+        ruta = ruta.replace(caracter, '/');
+        Reader lector = new BufferedReader(new FileReader(ruta));
+
+        Scanner1 lexer = new Scanner1(lector);
+        
+        while (true) {
+            String tokens;
+            try {
+                tokens = lexer.yylex().toString();
+            } catch (Exception e) {
+                System.out.println("FIN");
+                return;
+            }
+            if(debug == true){
+                if(tokens.equals("ERROR")){
+                    System.out.println(tokens + ": " + lexer.lexeme);
+                    System.out.println("Linea: " + lexer.line + " Columna: " + lexer.column);
+                    System.out.println(" ");
+                }
+            }
+        }
+    }
+
     public static void parsear(String filename) throws IOException {
-        System.out.println(filename);
+        //System.out.println(filename);
 
         String ST = "";
         Path path = Paths.get("");
-        String ruta = path.toAbsolutePath().toString() + "/" + filename; // Es necesario cambiar ruta desde CMD
+        String ruta = path.toAbsolutePath().toString() + "/compiler/" + filename; // Es necesario cambiar ruta desde CMD
         char caracter = (char) 92; 
         ruta = ruta.replace(caracter, '/');
-        System.out.println(ruta);
 
         try {
             File archivo = new File(ruta);
@@ -52,13 +78,16 @@ public class Compiler {
 
         } catch (Exception ex) {
             Symbol sym = s.getS();
-            System.out.println("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+            System.out.println("Error de sintaxis. Linea: " + (sym.right) + " Columna: " + (sym.left) + ", Texto: \"" + sym.value + "\"");
         }
     }
 
 
 
     public static void main(String[] args) throws IOException {
+        String str = "archivo.txt -debug scan";
+        args = new String[] {"archivo.txt", "-target", "parse"};
+
         // parametros de prueba
         //String info[] = {"archivo.txt", "-target", "scan"};
         //args = info;
@@ -79,84 +108,20 @@ public class Compiler {
 
             } 
             else if (args[1].equals("-target")) {
-
-
+                
                 if (args[2].equals("scan")) {
                     // llamamos una instancia del scan 
                     System.out.println("stage: scanning\n");
-
-                    try {
-                        Path path = Paths.get("");
-                        String ruta = path.toAbsolutePath().toString() + "/" + filename; // Es necesario cambiar ruta desde CMD
-                        char caracter = (char) 92; 
-                        ruta = ruta.replace(caracter, '/');
-                        System.out.println(ruta);
-                        Reader lector = new BufferedReader(new FileReader(ruta));
-                        Scanner1 lexer = new Scanner1(lector);
-            
-                        while (true) {
-                            String tokens;
-                            try {
-                                tokens = lexer.yylex().toString();
-            
-                            } catch (Exception e) {
-                                System.out.println("FIN");
-                                return;
-                            }
-                            if(tokens.equals("ERROR")){
-                                System.out.println(tokens + ": " + lexer.lexeme);
-                                System.out.println("Linea: " + lexer.line + " Columna: " + lexer.column);
-                                System.out.println(" ");
-                            }
-                        }
-
-                    } catch (FileNotFoundException ex) {
-                        System.out.println(ex);
-                        System.out.println("Error a ejecutar el Scanner");
-                    }
+                    scanear(filename, false);
                 }
-
-                if (args[2].equals("parse")) {
+                else if (args[2].equals("parse")) {
                     // llamamos una instancia del parser
                     System.out.println("stage: scanning\n");
+                    scanear(filename,false);
 
-                    try {
-                        Path path = Paths.get("");
-                        String ruta = path.toAbsolutePath().toString() + "/" + filename; // Es necesario cambiar ruta desde CMD
-                        char caracter = (char) 92; 
-                        ruta = ruta.replace(caracter, '/');
-                        System.out.println(ruta);
-                        Reader lector = new BufferedReader(new FileReader(ruta));
-                        Scanner1 lexer = new Scanner1(lector);
-            
-                        while (true) {
-                            String tokens;
-                            try {
-                                tokens = lexer.yylex().toString();
-            
-                            } catch (Exception e) {
-                                System.out.println("FIN");
-                                return;
-                            }
-                            if(tokens.equals("ERROR")){
-                                System.out.println(tokens + ": " + lexer.lexeme);
-                                System.out.println("Linea: " + lexer.line + " Columna: " + lexer.column);
-                                System.out.println(" ");
-                            }
-                        }
-
-                    } catch (FileNotFoundException ex) {
-                        System.out.println(ex);
-                        System.out.println("Error a ejecutar el Scanner");
-                    }
-                
-                    // Aquí va el parsing 
                     System.out.println("stage: parsing\n");
                     parsear(filename);
-                    
-                
                 }
-
                 else {
                     System.out.println("Invalid <target>");
                 }

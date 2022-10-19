@@ -571,7 +571,7 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         
         RESULT=tmp;
 :} 
-            | If LeftParent EXPR:e RightParent ELSE_BLOCK:eb 
+            | If LeftParent EXPR:e RightParent BLOCK:b ELSE_BLOCK:eb 
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
@@ -592,6 +592,8 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         RP.setNumNodo(parser.contador++);
         RP.setValor(")"); 
         tmp.addHijo((Nodo) RP);
+
+        tmp.addHijo((Nodo) b);
 
         tmp.addHijo((Nodo) eb);
         

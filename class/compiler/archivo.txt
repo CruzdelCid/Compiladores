@@ -1,11 +1,12 @@
 class Program {
     void funciona() {
         int a, b, c;
-        a = 335;
+        int d;
+        a = 35;
         b = 333;
         c = 337;
-
-    }
+        
+        }
 
     int prueba() {
         boolean daniel, mario;

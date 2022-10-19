@@ -46,10 +46,9 @@ public class Test1 {
 
         } catch (Exception ex) {
             Symbol sym = s.getS();
-            System.out.println("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+            System.out.println("Error de sintaxis. Linea: " + (sym.right) + " Columna: " + (sym.left) + ", Texto: \"" + sym.value + "\"");
         }
     }
-
 
     public static void main(String[] args) throws IOException {
         parsear("archivo.txt");
