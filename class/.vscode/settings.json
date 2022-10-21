@@ -7,15 +7,5 @@
         "compiler/java_cup.jar",
         "compiler/java-cup-11a.jar",
         "compiler/JFlex.jar"
-    ],
-    "configurations": [
-        {
-            "type": "java",
-            "request": "launch",
-            "vmArgs": "--foo arg1 --bar arg2",
-            "mainClass": "baz.Klass",
-            "projectName": "baz"
-        }
-    ],
-    "compounds": []
+    ]
 }

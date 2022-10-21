@@ -54,10 +54,12 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 {espacio} {/*Ignore*/}
 "//".* {/*Ignore*/}
 
-/* indentificadores
+/* indentificadores*/
+/*
 {digit}             {return new Symbol(sym.Digit, yychar, yyline, yytext());} 
 {alpha}             {return new Symbol(sym.Alpha, yychar, yyline, yytext());}
-{hex_digit}         {return new Symbol(sym.HexDigit, yychar, yyline, yytext());} */
+{hex_digit}         {return new Symbol(sym.HexDigit, yychar, yyline, yytext());}
+*/
 {id}                {return new Symbol(sym.Id, yychar, yyline, yytext());} 
 {hex_literal}       {return new Symbol(sym.HexLiteral, yychar, yyline, yytext());} 
 {decimal_literal}   {return new Symbol(sym.DecimalLiteral, yychar, yyline, yytext());} 
@@ -84,8 +86,8 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 "!"                 {return new Symbol(sym.Exclam, yychar, yyline, yytext());}
 
 
-/* agrupaciones
-"[]"                {return new Symbol(sym.BracketOpenClose, yychar, yyline, yytext());} */
+/* agrupaciones */
+"[]"                {return new Symbol(sym.BracketOpenClose, yychar, yyline, yytext());} 
 "("                 {return new Symbol(sym.LeftParent, yychar, yyline, yytext());} 
 ")"                 {return new Symbol(sym.RightParent, yychar, yyline, yytext());} 
 "["                 {return new Symbol(sym.LeftBracket, yychar, yyline, yytext());} 
@@ -110,7 +112,7 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
                     
 
 
-/* Error de analisis
+/* Error de analisis  */
  . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
 
- /* https://github.com/sebdeveloper6952/decaf-compiler/blob/main/Decaf.g4#L46 adicional gramatica */
+/*https://github.com/sebdeveloper6952/decaf-compiler/blob/main/Decaf.g4#L46 adicional gramatica */

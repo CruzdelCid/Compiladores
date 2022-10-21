@@ -27,6 +27,9 @@ public enum Tokens {
     HexLiteral,
     DecimalLiteral,
     IntLiteral,
+    CharLiteral,
+    StringLiteral,
+
     Asign,
     AsignSum,
     AsignSubs,

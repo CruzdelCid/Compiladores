@@ -1,3 +1,5 @@
+'d'
+
 class Program {
     void funciona() {
         int a, b, c;

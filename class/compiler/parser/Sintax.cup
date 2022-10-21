@@ -28,7 +28,7 @@ terminal Class, Program, Void, Int, Boolean, If, Else, For, Return, Break, Conti
     ParentOpenClose, BracketOpenClose, KeyOpenClose,
     StringLiteral, Callout, Exclam, Comma, ERROR; 
 
-terminal String String, Digit, Alpha, Id, HexDigit, HexLiteral, DecimalLiteral; 
+terminal String String, Digit, Id, HexLiteral, DecimalLiteral; 
 
 non terminal INICIO, PROGRAM, PROGRAM_FIELD_DECL, PROGRAM_METHOD_DECL, FIELD_DECL, DECL, 
     FIELD_CLOSE, METHOD_DECL, M_DECL, BLOCK, BLOCK_VAR_DECL, BLOCK_STATEMENT, VAR_DECL, 

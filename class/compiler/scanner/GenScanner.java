@@ -1,4 +1,4 @@
-package parser;
+package scanner;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -9,7 +9,7 @@ public class GenScanner {
     public static void main(String[] args) { 
         Path path = Paths.get("");
 		String ruta1 = path.toAbsolutePath().toString();
-        String ruta = ruta1 + "/compiler/parser/LexerCup.flex"; 
+        String ruta = ruta1 + "/compiler/scanner/Lexer.flex"; 
 
         generarLexer(ruta);
     }

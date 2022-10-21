@@ -9,6 +9,7 @@ import static scanner.Tokens.*;
 %class Scanner
 %type Tokens
 
+
 digit = [0-9]
 alpha = [a-zA-Z]
 alpha_num = {alpha}|{digit}
@@ -18,6 +19,8 @@ hex_literal = 0[xX]{hex_digit}({hex_digit})*
 decimal_literal =  {digit}({digit})*
 int_literal = {hex_literal} | {decimal_literal}
 espacio = [ ,\t,\r,\n]+
+char_literal = [^a]
+
 
 %{
     public String lexeme;
@@ -55,11 +58,13 @@ false               {lexeme=yytext(); column=yycolumn; line=yyline; return False
 {hex_literal}       {lexeme=yytext(); column=yycolumn; line=yyline; return HexLiteral;}
 {decimal_literal}   {lexeme=yytext(); column=yycolumn; line=yyline; return DecimalLiteral;}
 {int_literal}       {lexeme=yytext(); column=yycolumn; line=yyline; return IntLiteral;}
+\'{char_literal}\'          {lexeme=yytext(); column=yycolumn; line=yyline; return CharLiteral;} 
+/*\"{string_literal}*\"       {lexeme=yytext(); column=yycolumn; line=yyline; return StringLiteral;}*/
 
 /* comparadores y operadores*/
 "="                 {lexeme=yytext(); column=yycolumn; line=yyline; return Asign;}
 "+="                {lexeme=yytext(); column=yycolumn; line=yyline; return AsignSum;}
-"+="                {lexeme=yytext(); column=yycolumn; line=yyline; return AsignSubs;}
+"-="                {lexeme=yytext(); column=yycolumn; line=yyline; return AsignSubs;}
 "+"                 {lexeme=yytext(); column=yycolumn; line=yyline; return Sum;}
 "-"                 {lexeme=yytext(); column=yycolumn; line=yyline; return Substract;}
 "*"                 {lexeme=yytext(); column=yycolumn; line=yyline; return Multiplication;}
