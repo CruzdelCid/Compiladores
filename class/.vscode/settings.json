@@ -6,9 +6,6 @@
         "compiler/libraries/JFlex.jar",
         "compiler/java_cup.jar",
         "compiler/java-cup-11a.jar",
-        "compiler/JFlex.jar",
-        "libraries/java_cup.jar",
-        "libraries/java-cup-11a.jar",
-        "libraries/JFlex.jar"
+        "compiler/JFlex.jar"
     ]
 }
