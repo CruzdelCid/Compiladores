@@ -43,7 +43,7 @@ public class Test1 {
         }
         
         try {
-            String cmd = "cmd /c dot -Tpng arbol.dot -o arbol.png";
+            String [] cmd = {"cmd", "/c", "dot", "-Tpng", "arbol.dot", "-o", "arbol.png"};
             Runtime.getRuntime().exec(cmd);
         } catch (IOException ioe) {
             System.out.println(ioe +" 2");
