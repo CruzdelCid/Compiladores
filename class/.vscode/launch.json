@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Compiler",
+            "request": "launch",
+            "mainClass": "Compiler",
+            "projectName": "class_82eef503"
+        },
+        {
+            "type": "java",
+            "name": "Launch GenParser",
+            "request": "launch",
+            "mainClass": "parser.GenParser",
+            "projectName": "class_82eef503"
+        },
+        {
+            "type": "java",
+            "name": "Launch GenScanner",
+            "request": "launch",
+            "mainClass": "parser.GenScanner",
+            "projectName": "class_82eef503"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test1",
+            "request": "launch",
+            "mainClass": "parser.Test1",
+            "projectName": "class_82eef503"
+        },
+        {
+            "type": "java",
+            "name": "Launch GenScanner(1)",
+            "request": "launch",
+            "mainClass": "scanner.GenScanner",
+            "projectName": "class_82eef503"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "mainClass": "scanner.Test",
+            "projectName": "class_82eef503"
+        }
+    ]
+}
