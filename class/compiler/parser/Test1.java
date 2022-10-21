@@ -74,7 +74,7 @@ public class Test1 {
 
         String ST = "";
         Path path = Paths.get("");
-        String ruta = path.toAbsolutePath().toString() + "/compiler/" + filename; // Es necesario cambiar ruta desde CMD
+        String ruta = path.toAbsolutePath().toString() + "/programas/" + filename; // Es necesario cambiar ruta desde CMD
         char caracter = (char) 92; 
         ruta = ruta.replace(caracter, '/');
         System.out.println(ruta);
