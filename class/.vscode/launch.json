@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Test1",
-            "request": "launch",
-            "mainClass": "parser.Test1",
-            "projectName": "class_38e0c183"
-        },
-        {
-            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
