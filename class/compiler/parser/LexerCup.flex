@@ -11,11 +11,10 @@ import java_cup.runtime.Symbol;
 %char
 %state STRING
 
-/*
+
 digit = [0-9]
 alpha = [a-zA-Z]
 hex_digit = [0-9a-fA-F]
-*/
 id = {alpha}({alpha}|{digit})*
 hex_literal = 0[xX]{hex_digit}({hex_digit})*
 decimal_literal =  {digit}({digit})*
