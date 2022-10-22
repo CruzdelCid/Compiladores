@@ -13,7 +13,7 @@ import java_cup.runtime.Symbol;
 import java.util.Scanner; // Import the Scanner class to read text files
 
 
-public class Test1 {
+public class TestParser {
     public static int verificar(Nodo raiz){
 
         System.out.println(raiz.getNombre());
@@ -28,7 +28,6 @@ public class Test1 {
         PrintWriter pw = null;
         String cadena = graficarNodo(raiz);
 
-        System.out.println(cadena);
         
         try{
             archivo = new FileWriter("arbol.dot");
@@ -37,7 +36,6 @@ public class Test1 {
             pw.println(cadena);
             pw.println("\n}");
             archivo.close();
-            System.out.println("el achivo se genero --------a-a-a-a--a-a-a-a--a-a");
         }catch (Exception e) {
             System.out.println(e +" 1");
         }
@@ -60,7 +58,7 @@ public class Test1 {
                 cadena += "\"" + nodo.getNumNodo() + "_" + nodo.getNombre() + " -> " + nodo.getValor() + "\"->\"" + hijos.getNumNodo() + "_" + hijos.getNombre() + " -> " + hijos.getValor() + "\"\n";
                 cadena += graficarNodo(hijos);
             } catch (Exception e) {
-                System.out.println(e);
+                // System.out.println(e);
             }
             
         }
@@ -99,13 +97,12 @@ public class Test1 {
         try {
             s.parse();
             System.out.println("Analisis realizado correctamente");
+            graficar(s.padre);
 
         } catch (Exception ex) {
             Symbol sym = s.getS();
             System.out.println("Error de sintaxis. Linea: " + (sym.right) + " Columna: " + (sym.left) + ", Texto: \"" + sym.value + "\"");
         }
-
-        graficar(s.padre);
     }
 
     public static void main(String[] args) throws IOException {

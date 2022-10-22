@@ -23,17 +23,17 @@ public class Main2 {
     // variables no declaradas pero sí usadas
     public static ErrorR errores = new ErrorR(); 
 
-    // 
     public static int createTable(Block bloque){
         int blockScope = scopeNumber;
 
         System.out.println("Vista_Scope: " + blockScope + "");
 
+        // Se obtiene la informacion del bloque
         ArrayList<VarDeclaration> declaraciones = bloque.varDeclaration;
         ArrayList<VarUsage> usos = bloque.varUsage;
         ArrayList<Block> scopes = bloque.block;
         
-        //lista de variables del scope
+        //  lista de variables del scope
         ArrayList<String> variables = new ArrayList<String>();  
 
         // Recorrido de varDeclaration
@@ -64,7 +64,6 @@ public class Main2 {
                 //System.out.println("Nombre: " + i.name + " Valor: "+ i.value + " location: "+ i.location);
                 errores.addError(i.name, blockScope, i.location);
             }
-            
         }
         
         tabla.printTable();

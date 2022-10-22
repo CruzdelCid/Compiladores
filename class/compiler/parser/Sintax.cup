@@ -52,7 +52,7 @@ INICIO ::= PROGRAM:p {:
 :}
 ;
 
-PROGRAM ::= Class Program KeyOpenClose
+PROGRAM ::= Class:c Program KeyOpenClose
 {:
 	Nodo tmp = new Nodo("PROGRAM");
         tmp.setNumNodo(parser.contador++);
@@ -60,6 +60,7 @@ PROGRAM ::= Class Program KeyOpenClose
         Nodo c = new Nodo("Class");
         c.setNumNodo(parser.contador++);
         c.setValor("class"); 
+        //c.setSimbol(c); 
         tmp.addHijo((Nodo) c);
 
         Nodo p = new Nodo("Program"); 

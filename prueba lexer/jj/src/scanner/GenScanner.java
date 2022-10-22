@@ -9,7 +9,7 @@ public class GenScanner {
     public static void main(String[] args) { 
         Path path = Paths.get("");
 		String ruta1 = path.toAbsolutePath().toString();
-        String ruta = ruta1 + "/compiler/scanner/Lexer.flex"; 
+        String ruta = ruta1 + "/src/scanner/Lexer.flex"; 
 
         generarLexer(ruta);
     }

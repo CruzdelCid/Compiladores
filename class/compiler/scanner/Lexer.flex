@@ -6,7 +6,7 @@ import static scanner.Tokens.*;
 %public
 %line
 %column
-%class Scanner
+%class Scanner1
 %type Tokens
 
 
