@@ -1,0 +1,1357 @@
+package parser;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    public String resultado="";
+    public Nodo padre;
+    public int contador = 1;
+
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+    
+    public Symbol getS(){
+        return this.s;
+    }
+
+:};
+
+terminal Class, Program, Void, Int, Boolean, If, Else, For, Return, Break, Continue, 
+    True, False, 
+    Asign, AsignAdd, AsignSubs, Add, Substract, Multiplication, Division, Mod, 
+    LessThan, GreaterThan, LessEqualThan, GreaterEqualThan, Equal, NotEqual, And, Or, 
+    SemiColom, LeftParent, RightParent, LeftBracket, RightBracket, LeftKey, RightKey,
+    ParentOpenClose, BracketOpenClose, KeyOpenClose,
+    StringLiteral, Callout, Exclam, Comma, ERROR; 
+
+terminal String String, Digit, Id, HexLiteral, DecimalLiteral; 
+
+non terminal INICIO, PROGRAM, PROGRAM_FIELD_DECL, PROGRAM_METHOD_DECL, FIELD_DECL, DECL, 
+    FIELD_CLOSE, METHOD_DECL, M_DECL, BLOCK, BLOCK_VAR_DECL, BLOCK_STATEMENT, VAR_DECL, 
+    VAR_ID, TYPE, STATEMENT, ELSE_BLOCK, RETURN_EXPR, ASSIGN_OP, METHOD_CALL, METHOD_CALL_EXPR, 
+    METHOD_CALL_CALLOUT, METHOD_NAME, LOCATION, LOCATION_EXPR, EXPR, CALLOUT_ARG, BIN_OP, 
+    ARITH_OP, REL_OP, EQ_OP, COND_OP, LITERAL, INT_LITERAL, BOOL_LITERAL
+; 
+
+precedence left Add, Substract, Multiplication, Division, Mod, LessThan, GreaterThan, LessEqualThan, 
+GreaterEqualThan, Equal, NotEqual, And, Or; 
+
+start with INICIO;
+
+INICIO ::= PROGRAM:p {:
+        Nodo tmp = new Nodo("INICIO");
+        tmp.setNumNodo(parser.contador++);
+        tmp.addHijo((Nodo) p);
+	parser.padre = (Nodo) tmp;
+	System.out.println("OK");
+        RESULT=tmp;
+:}
+;
+
+PROGRAM ::= Class:c Program KeyOpenClose
+{:
+	Nodo tmp = new Nodo("PROGRAM");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo C = new Nodo("Class");
+        C.setNumNodo(parser.contador++);
+        C.setValor("class"); 
+        //c.setSimbol(c); 
+        tmp.addHijo((Nodo) C);
+
+        Nodo p = new Nodo("Program"); 
+        p.setNumNodo(parser.contador++);
+        p.setValor("Program"); 
+        tmp.addHijo((Nodo) p);
+
+        Nodo KOC = new Nodo("KeyOpenClose"); 
+        KOC.setNumNodo(parser.contador++);
+        KOC.setValor("{}"); 
+        tmp.addHijo((Nodo) KOC);
+        
+        RESULT=tmp;
+:}
+        | Class Program LeftKey PROGRAM_FIELD_DECL:pfd
+{:
+        Nodo tmp = new Nodo("PROGRAM");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo c = new Nodo("Class"); 
+        c.setNumNodo(parser.contador++);
+        c.setValor("class"); 
+        tmp.addHijo((Nodo) c);
+
+        Nodo p = new Nodo("Program"); 
+        p.setNumNodo(parser.contador++);
+        p.setValor("Program"); 
+        tmp.addHijo((Nodo) p);
+
+        Nodo lk = new Nodo("LeftKey"); 
+        lk.setNumNodo(parser.contador++);
+        lk.setValor("{"); 
+        tmp.addHijo((Nodo) lk);
+
+        tmp.addHijo((Nodo) pfd); 
+        
+        RESULT=tmp;
+:}
+;
+
+PROGRAM_FIELD_DECL ::= FIELD_DECL:fd PROGRAM_FIELD_DECL:pfd
+{:
+        Nodo tmp = new Nodo("PROGRAM_FIELD_DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) fd);
+        tmp.addHijo((Nodo) pfd);
+        
+        RESULT=tmp;
+
+:}
+                | METHOD_DECL:md PROGRAM_METHOD_DECL:pmd
+{:
+        Nodo tmp = new Nodo("PROGRAM_FIELD_DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) md);
+        tmp.addHijo((Nodo) pmd);
+        
+        RESULT=tmp;
+
+:}
+                | RightKey
+{:
+        Nodo tmp = new Nodo("PROGRAM_FIELD_DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo rk = new Nodo("RightKey"); 
+        rk.setNumNodo(parser.contador++);
+        rk.setValor("}"); 
+        tmp.addHijo((Nodo) rk);
+        
+        RESULT=tmp;
+:}
+;
+
+PROGRAM_METHOD_DECL ::= METHOD_DECL:md PROGRAM_METHOD_DECL:pmd
+{:
+        Nodo tmp = new Nodo("PROGRAM_METHOD_DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) md);
+        tmp.addHijo((Nodo) pmd);
+        
+        RESULT=tmp;
+:}
+                | RightKey
+{:
+        Nodo tmp = new Nodo("PROGRAM_METHOD_DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo rk = new Nodo("RightKey"); 
+        rk.setNumNodo(parser.contador++);
+        rk.setValor("}"); 
+        tmp.addHijo((Nodo) rk);
+        
+        RESULT=tmp;
+:}
+;
+
+FIELD_DECL ::= TYPE:tp DECL:d
+{:
+        Nodo tmp = new Nodo("FIELD_DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) tp);
+        tmp.addHijo((Nodo) d);
+        
+        RESULT=tmp;
+:}
+;
+
+DECL ::= Id:i FIELD_CLOSE:fc 
+{:
+        Nodo tmp = new Nodo("DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo item = new Nodo("Id"); 
+        item.setNumNodo(parser.contador++);
+        item.setValor(i.toString()); 
+        tmp.addHijo((Nodo) item);
+
+        tmp.addHijo((Nodo) fc);
+        
+        RESULT=tmp;
+:}
+        | Id:i LeftBracket INT_LITERAL:il RightBracket FIELD_CLOSE:fc
+{:
+        Nodo tmp = new Nodo("DECL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo item = new Nodo("Id"); 
+        item.setNumNodo(parser.contador++);
+        item.setValor(i.toString()); 
+        tmp.addHijo((Nodo) item);
+
+        Nodo lb = new Nodo("LeftBracket"); 
+        lb.setNumNodo(parser.contador++);
+        lb.setValor("["); 
+        tmp.addHijo((Nodo) lb);
+
+        tmp.addHijo((Nodo) il);
+
+        Nodo rb = new Nodo("RightBracket"); 
+        rb.setNumNodo(parser.contador++);
+        rb.setValor("]"); 
+        tmp.addHijo((Nodo) rb);
+
+        tmp.addHijo((Nodo) fc);
+        
+        RESULT=tmp;
+:}
+; 
+
+FIELD_CLOSE ::= Comma DECL:d
+{:
+        Nodo tmp = new Nodo("FIELD_CLOSE");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo c = new Nodo("Comma"); 
+        c.setNumNodo(parser.contador++);
+        c.setValor(","); 
+        tmp.addHijo((Nodo) c);
+
+        tmp.addHijo((Nodo) d);
+        
+        RESULT=tmp;
+:}
+		| SemiColom 
+{:
+        Nodo tmp = new Nodo("FIELD_CLOSE");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo sc = new Nodo("SemiColom"); 
+        sc.setNumNodo(parser.contador++);
+        sc.setValor(";"); 
+        tmp.addHijo((Nodo) sc);
+        
+        RESULT=tmp;
+:}
+; 
+
+METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md 
+{:
+        Nodo tmp = new Nodo("METHOD_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) t);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+
+        tmp.addHijo((Nodo) md);
+        
+        RESULT=tmp;
+:}
+            | Void Id:i LeftParent M_DECL:md
+{:
+        Nodo tmp = new Nodo("METHOD_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo V = new Nodo("Void"); 
+        V.setNumNodo(parser.contador++);
+        V.setValor("void"); 
+        tmp.addHijo((Nodo) V);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+
+        tmp.addHijo((Nodo) md);
+        
+        RESULT=tmp;
+:}
+            | TYPE:t Id:i ParentOpenClose BLOCK:b
+{:
+        Nodo tmp = new Nodo("METHOD_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) t);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString());
+        tmp.addHijo((Nodo) ID);
+
+        Nodo POC = new Nodo("ParentOpenClose"); 
+        POC.setNumNodo(parser.contador++);
+        POC.setValor("()"); 
+        tmp.addHijo((Nodo) POC);
+
+        tmp.addHijo((Nodo) b);
+        
+        RESULT=tmp;
+:}
+            | Void Id:i ParentOpenClose:ppp BLOCK:b
+{:
+        Nodo tmp = new Nodo("METHOD_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo V = new Nodo("Void"); 
+        V.setNumNodo(parser.contador++);
+        V.setValor("void"); 
+        tmp.addHijo((Nodo) V);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo POC = new Nodo("ParentOpenClose"); 
+        POC.setNumNodo(parser.contador++);
+        POC.setValor("()"); 
+        tmp.addHijo((Nodo) POC);
+
+        tmp.addHijo((Nodo) b);
+        
+        RESULT=tmp;
+:}
+;
+
+M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
+{:
+        Nodo tmp = new Nodo("M_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) t);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+
+        tmp.addHijo((Nodo) b);
+        
+        RESULT=tmp;
+:}
+        | TYPE:t Id:i Comma M_DECL:md
+{:
+        Nodo tmp = new Nodo("M_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) t);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(","); 
+        tmp.addHijo((Nodo) C);
+
+        tmp.addHijo((Nodo) md);
+        
+        RESULT=tmp;
+:}
+; 
+
+// HAY QUE HACER RECURSIVO VAR_DECL Y STATEMENT
+BLOCK ::= KeyOpenClose
+{:
+        Nodo tmp = new Nodo("BLOCK");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo KOP = new Nodo("KeyOpenClose"); 
+        KOP.setNumNodo(parser.contador++);
+        KOP.setValor("{}"); 
+        tmp.addHijo((Nodo) KOP);
+        
+        RESULT=tmp;
+:}
+        | LeftKey BLOCK_VAR_DECL:bvd 
+{:
+        Nodo tmp = new Nodo("BLOCK");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo LK = new Nodo("LeftKey"); 
+        LK.setNumNodo(parser.contador++);
+        LK.setValor("{"); 
+        tmp.addHijo((Nodo) LK);
+        
+        tmp.addHijo((Nodo) bvd);
+        
+        RESULT=tmp;
+:}
+;
+
+BLOCK_VAR_DECL ::= VAR_DECL:vd BLOCK_VAR_DECL:bvd
+{:
+        Nodo tmp = new Nodo("BLOCK_VAR_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) vd);        
+        tmp.addHijo((Nodo) bvd);
+        
+        RESULT=tmp;
+:}
+            | STATEMENT:s BLOCK_STATEMENT:bs
+{:
+        Nodo tmp = new Nodo("BLOCK_VAR_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) s);        
+        tmp.addHijo((Nodo) bs);
+        
+        RESULT=tmp;
+:}
+            | RightKey
+{:
+        Nodo tmp = new Nodo("BLOCK_VAR_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo RK = new Nodo("RightKey"); 
+        RK.setNumNodo(parser.contador++);
+        RK.setValor("}"); 
+        tmp.addHijo((Nodo) RK);
+        
+        RESULT=tmp;
+:}
+;
+
+BLOCK_STATEMENT ::= STATEMENT:s BLOCK_STATEMENT:bs
+{:
+        Nodo tmp = new Nodo("BLOCK_STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) s);        
+        tmp.addHijo((Nodo) bs);
+        
+        RESULT=tmp;
+:}
+                | RightKey
+{:
+        Nodo tmp = new Nodo("BLOCK_STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo RK = new Nodo("RightKey"); 
+        RK.setNumNodo(parser.contador++);
+        RK.setValor("}"); 
+        tmp.addHijo((Nodo) RK);
+        
+        RESULT=tmp;
+:}
+;
+
+VAR_DECL ::= TYPE:t VAR_ID:vi
+{:
+        Nodo tmp = new Nodo("VAR_DECL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) t);
+        tmp.addHijo((Nodo) vi);
+        
+        RESULT=tmp;
+:}
+; 
+
+VAR_ID ::= Id:i Comma VAR_ID:vi
+{:
+        Nodo tmp = new Nodo("VAR_ID");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(","); 
+        tmp.addHijo((Nodo) C);
+
+        tmp.addHijo((Nodo) vi);
+        
+        RESULT=tmp;
+:}
+        | Id:i SemiColom
+{:
+        Nodo tmp = new Nodo("VAR_ID");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:}
+;
+
+TYPE ::= Int
+{:
+        Nodo tmp = new Nodo("TYPE");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo INT = new Nodo("Int"); 
+        INT.setNumNodo(parser.contador++);
+        INT.setValor("Int"); 
+        tmp.addHijo((Nodo) INT);
+        
+        RESULT=tmp;
+:}
+    | Boolean 
+{:
+        Nodo tmp = new Nodo("TYPE");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo BOO = new Nodo("Boolean"); 
+        BOO.setNumNodo(parser.contador++);
+        BOO.setValor("Boolean"); 
+        tmp.addHijo((Nodo) BOO);
+        
+        RESULT=tmp;
+:}
+; 
+
+STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) l);
+        tmp.addHijo((Nodo) ao);
+        tmp.addHijo((Nodo) e);
+
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:} 
+            | METHOD_CALL:mc SemiColom
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) mc);
+
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:} 
+            | If LeftParent EXPR:e RightParent BLOCK:b ELSE_BLOCK:eb 
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo IF = new Nodo("If"); 
+        IF.setNumNodo(parser.contador++);
+        IF.setValor("If"); 
+        tmp.addHijo((Nodo) IF);
+
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+
+        tmp.addHijo((Nodo) e);
+
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+
+        tmp.addHijo((Nodo) b);
+
+        tmp.addHijo((Nodo) eb);
+        
+        RESULT=tmp;
+:} 
+            | For Id:i Asign EXPR:e1 Comma EXPR:e2 BLOCK:b
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo FOR = new Nodo("For"); 
+        FOR.setNumNodo(parser.contador++);
+        FOR.setValor("For"); 
+        tmp.addHijo((Nodo) FOR);
+        
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        Nodo Asi = new Nodo("Asign"); 
+        Asi.setNumNodo(parser.contador++);
+        Asi.setValor("="); 
+        tmp.addHijo((Nodo) Asi);
+
+        tmp.addHijo((Nodo) e1);
+
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(","); 
+        tmp.addHijo((Nodo) C);
+
+        tmp.addHijo((Nodo) e2);
+        tmp.addHijo((Nodo) b);
+        
+        RESULT=tmp;
+:} 
+            | Return RETURN_EXPR:re 
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo R = new Nodo("Return"); 
+        R.setNumNodo(parser.contador++);
+        R.setValor("return"); 
+        tmp.addHijo((Nodo) R);
+        
+        tmp.addHijo((Nodo) re);
+        
+        RESULT=tmp;
+:} 
+            | Break SemiColom
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo B = new Nodo("Break"); 
+        B.setNumNodo(parser.contador++);
+        B.setValor("break"); 
+        tmp.addHijo((Nodo) B);
+        
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:} 
+            | Continue SemiColom
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo C = new Nodo("Continue"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor("continue"); 
+        tmp.addHijo((Nodo) C);
+        
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:} 
+            | BLOCK:b
+{:
+        Nodo tmp = new Nodo("STATEMENT");
+        tmp.setNumNodo(parser.contador++);
+        tmp.addHijo((Nodo) b);
+        
+        RESULT=tmp;
+:} 
+;
+
+ELSE_BLOCK ::= Else BLOCK:b
+{:
+        Nodo tmp = new Nodo("ELSE_BLOCK");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo E = new Nodo("Else"); 
+        E.setNumNodo(parser.contador++);
+        E.setValor("else"); 
+        tmp.addHijo((Nodo) E);
+        tmp.addHijo((Nodo) b);
+        
+        RESULT=tmp;
+:} 
+            |
+;
+
+RETURN_EXPR ::= EXPR:e SemiColom
+{:
+        Nodo tmp = new Nodo("ELSE_BLOCK");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) e);
+
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:} 
+            | SemiColom
+{:
+        Nodo tmp = new Nodo("ELSE_BLOCK");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        tmp.addHijo((Nodo) SC);
+        
+        RESULT=tmp;
+:} 
+; 
+
+
+ASSIGN_OP ::= Asign
+{:
+        Nodo tmp = new Nodo("ASSIGN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo Asi = new Nodo("Asign"); 
+        Asi.setNumNodo(parser.contador++);
+        Asi.setValor("="); 
+        tmp.addHijo((Nodo) Asi);
+        
+        RESULT=tmp;
+:} 
+            | AsignAdd
+{:
+        Nodo tmp = new Nodo("ASSIGN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo Asi = new Nodo("AsignAdd"); 
+        Asi.setNumNodo(parser.contador++);
+        Asi.setValor("+="); 
+        tmp.addHijo((Nodo) Asi);
+        
+        RESULT=tmp;
+:} 
+            | AsignSubs
+{:
+        Nodo tmp = new Nodo("ASSIGN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo Asi = new Nodo("AsignSubs"); 
+        Asi.setNumNodo(parser.contador++);
+        Asi.setValor("-="); 
+        tmp.addHijo((Nodo) Asi);
+        
+        RESULT=tmp;
+:} 
+; 
+
+METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
+{:
+        Nodo tmp = new Nodo("METHOD_CALL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) mn);
+
+        Nodo POC = new Nodo("ParentOpenClose"); 
+        POC.setNumNodo(parser.contador++);
+        POC.setValor("()"); 
+        tmp.addHijo((Nodo) POC);
+        
+        RESULT=tmp;
+:} 
+            | METHOD_NAME:mn LeftParent METHOD_CALL_EXPR:mce
+{:
+        Nodo tmp = new Nodo("METHOD_CALL");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) mn);
+
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+        
+        tmp.addHijo((Nodo) mce);
+        
+        RESULT=tmp;
+:} 
+            | Callout LeftParent StringLiteral RightParent
+{:
+        Nodo tmp = new Nodo("METHOD_CALL");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo C = new Nodo("Callout"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor("callout"); 
+        tmp.addHijo((Nodo) C);
+
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+
+        Nodo ST = new Nodo("StringLiteral"); 
+        ST.setNumNodo(parser.contador++);
+        ST.setValor("StringLiteral"); 
+        tmp.addHijo((Nodo) ST);
+
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+        
+        RESULT=tmp;
+:} 
+            | Callout LeftParent StringLiteral METHOD_CALL_CALLOUT:mcc
+{:
+        Nodo tmp = new Nodo("METHOD_CALL");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo C = new Nodo("Callout"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor("callout"); 
+        tmp.addHijo((Nodo) C);
+
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+
+        Nodo ST = new Nodo("StringLiteral"); 
+        ST.setNumNodo(parser.contador++);
+        ST.setValor("StringLiteral"); 
+        tmp.addHijo((Nodo) ST);
+
+        tmp.addHijo((Nodo) mcc);
+
+        RESULT=tmp;
+:} 
+; 
+
+METHOD_CALL_EXPR ::= EXPR:e Comma METHOD_CALL_EXPR:mce 
+{:
+        Nodo tmp = new Nodo("METHOD_CALL_EXPR");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) e);
+
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(","); 
+        tmp.addHijo((Nodo) C);
+
+        tmp.addHijo((Nodo) mce);
+
+        RESULT=tmp;
+:} 
+                | EXPR:e RightParent
+{:
+        Nodo tmp = new Nodo("METHOD_CALL_EXPR");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) e);
+
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+
+        RESULT=tmp;
+:} 
+;
+
+METHOD_CALL_CALLOUT ::= CALLOUT_ARG:ca Comma METHOD_CALL_CALLOUT:mcc
+{:
+        Nodo tmp = new Nodo("METHOD_CALL_CALLOUT");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) ca);
+
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(","); 
+        tmp.addHijo((Nodo) C);
+
+        tmp.addHijo((Nodo) mcc);
+
+        RESULT=tmp;
+:} 
+                    | CALLOUT_ARG:ca RightParent
+{:
+        Nodo tmp = new Nodo("METHOD_CALL_CALLOUT");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) ca);
+
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+
+        RESULT=tmp;
+:} 
+; 
+
+METHOD_NAME ::= Id:i
+{:
+        Nodo tmp = new Nodo("METHOD_NAME");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        tmp.addHijo((Nodo) ID);
+
+        RESULT=tmp;
+:} 
+; 
+
+LOCATION ::= Id:i LOCATION_EXPR:le
+{:
+        Nodo tmp = new Nodo("LOCATION");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString());
+        tmp.addHijo((Nodo) ID);
+
+        tmp.addHijo((Nodo) le);
+
+        RESULT=tmp;
+:} 
+; 
+
+LOCATION_EXPR ::= LeftBracket EXPR:e RightBracket
+{:
+        Nodo tmp = new Nodo("LOCATION");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo LB = new Nodo("LeftBracket"); 
+        LB.setNumNodo(parser.contador++);
+        LB.setValor("["); 
+        tmp.addHijo((Nodo) LB);
+
+        tmp.addHijo((Nodo) e);
+
+        Nodo RB = new Nodo("RightBracket"); 
+        RB.setNumNodo(parser.contador++);
+        RB.setValor("]"); 
+        tmp.addHijo((Nodo) RB);
+
+        RESULT=tmp;
+:} 
+                | 
+; 
+
+EXPR ::= LOCATION:lo 
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) lo);
+
+        RESULT=tmp;
+:} 
+        | METHOD_CALL:mc
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) mc);
+
+        RESULT=tmp;
+:}
+        | LITERAL:li 
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) li);
+
+        RESULT=tmp;
+:}
+        | EXPR:e1 BIN_OP:bo EXPR:e2
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) e1);
+        tmp.addHijo((Nodo) bo);
+        tmp.addHijo((Nodo) e2);
+
+        RESULT=tmp;
+:}
+        | Substract EXPR:e
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo S = new Nodo("Substract"); 
+        S.setNumNodo(parser.contador++);
+        S.setValor("-"); 
+        tmp.addHijo((Nodo) S);
+        
+        tmp.addHijo((Nodo) e);
+
+        RESULT=tmp;
+:}
+        | Exclam EXPR:e
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo E = new Nodo("Exclam"); 
+        E.setNumNodo(parser.contador++);
+        E.setValor("!"); 
+        tmp.addHijo((Nodo) E);
+        
+        tmp.addHijo((Nodo) e);
+
+        RESULT=tmp;
+:}
+        | LeftParent EXPR:e RightParent
+{:
+        Nodo tmp = new Nodo("EXPR");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo LP = new Nodo("LeftParent"); 
+        LP.setNumNodo(parser.contador++);
+        LP.setValor("("); 
+        tmp.addHijo((Nodo) LP);
+        
+        tmp.addHijo((Nodo) e);
+
+        Nodo RP = new Nodo("RightParent"); 
+        RP.setNumNodo(parser.contador++);
+        RP.setValor(")"); 
+        tmp.addHijo((Nodo) RP);
+
+        RESULT=tmp;
+:}
+; 
+
+CALLOUT_ARG ::= EXPR:e 
+{:
+        Nodo tmp = new Nodo("CALLOUT_ARG");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) e);
+
+        RESULT=tmp;
+:}
+            | StringLiteral
+{:
+        Nodo tmp = new Nodo("CALLOUT_ARG");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo SL = new Nodo("StringLiteral"); 
+        SL.setNumNodo(parser.contador++);
+        SL.setValor("StringLiteral"); 
+        tmp.addHijo((Nodo) SL);
+
+        RESULT=tmp;
+:}
+; 
+
+BIN_OP ::= ARITH_OP:ao 
+{:
+        Nodo tmp = new Nodo("BIN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) ao);
+
+        RESULT=tmp;
+:}
+        | REL_OP:ro
+{:
+        Nodo tmp = new Nodo("BIN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) ro);
+
+        RESULT=tmp;
+:}
+        | EQ_OP:eo
+{:
+        Nodo tmp = new Nodo("BIN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) eo);
+
+        RESULT=tmp;
+:}
+        | COND_OP:co
+{:
+        Nodo tmp = new Nodo("BIN_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        tmp.addHijo((Nodo) co);
+
+        RESULT=tmp;
+:}
+; 
+
+ARITH_OP ::= Add 
+{:
+        Nodo tmp = new Nodo("ARITH_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("Add"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("+"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | Substract
+{:
+        Nodo tmp = new Nodo("ARITH_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("Substract"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("-"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | Multiplication
+{:
+        Nodo tmp = new Nodo("ARITH_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("Multiplication"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("*"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | Division
+{:
+        Nodo tmp = new Nodo("ARITH_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("Division"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("/"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | Mod
+{:
+        Nodo tmp = new Nodo("ARITH_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("Mod"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("%"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+; 
+
+REL_OP ::= LessThan 
+{:
+        Nodo tmp = new Nodo("REL_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("LessThan"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("<"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | GreaterThan
+{:
+        Nodo tmp = new Nodo("REL_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("GreaterThan"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor(">"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | LessEqualThan
+{:
+        Nodo tmp = new Nodo("REL_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("LessEqualThan"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("<="); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | GreaterEqualThan
+{:
+        Nodo tmp = new Nodo("REL_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("GreaterEqualThan"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor(">="); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+;
+
+EQ_OP ::= Equal
+{:
+        Nodo tmp = new Nodo("EQ_OP");
+        tmp.setNumNodo(parser.contador++);
+
+        Nodo O = new Nodo("Equal"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("=="); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | NotEqual
+{:
+        Nodo tmp = new Nodo("EQ_OP");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo O = new Nodo("NotEqual"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("!="); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+;
+
+COND_OP ::= And
+{:
+        Nodo tmp = new Nodo("COND_OP");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo O = new Nodo("And"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("&&"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+        | Or
+{:
+        Nodo tmp = new Nodo("COND_OP");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo O = new Nodo("Or"); 
+        O.setNumNodo(parser.contador++);
+        O.setValor("||"); 
+        tmp.addHijo((Nodo) O);
+
+        RESULT=tmp;
+:}
+; 
+
+LITERAL ::= INT_LITERAL:il 
+{:
+        Nodo tmp = new Nodo("LITERAL");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) il);
+
+        RESULT=tmp;
+:}
+        | BOOL_LITERAL:bl
+{:
+        Nodo tmp = new Nodo("LITERAL");
+        tmp.setNumNodo(parser.contador++);
+        
+        tmp.addHijo((Nodo) bl);
+
+        RESULT=tmp;
+:}
+; 
+
+INT_LITERAL ::= DecimalLiteral:d
+{:
+        Nodo tmp = new Nodo("INT_LITERAL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo DL = new Nodo("DecimalLiteral"); 
+        DL.setNumNodo(parser.contador++);
+        DL.setValor(d.toString()); 
+        tmp.addHijo((Nodo) DL);
+
+        RESULT=tmp;
+:}
+            | HexLiteral:h
+{:
+        Nodo tmp = new Nodo("INT_LITERAL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo HL = new Nodo("HexLiteral"); 
+        HL.setNumNodo(parser.contador++);
+        HL.setValor(h.toString()); 
+        tmp.addHijo((Nodo) HL);
+
+        RESULT=tmp;
+:}
+; 
+
+BOOL_LITERAL ::= True
+{:
+        Nodo tmp = new Nodo("BOOL_LITERAL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo T = new Nodo("True"); 
+        T.setNumNodo(parser.contador++);
+        T.setValor("true"); 
+        tmp.addHijo((Nodo) T);
+
+        RESULT=tmp;
+:}
+            | False 
+{:
+        Nodo tmp = new Nodo("BOOL_LITERAL");
+        tmp.setNumNodo(parser.contador++);
+        
+        Nodo F = new Nodo("False"); 
+        F.setNumNodo(parser.contador++);
+        F.setValor("false"); 
+        tmp.addHijo((Nodo) F);
+
+        RESULT=tmp;
+:}
+; 

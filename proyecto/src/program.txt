@@ -1,0 +1,7 @@
+class Program {
+    int guapo; 
+    void funciona() {
+        int a;
+        a = 35;
+    }
+}

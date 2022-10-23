@@ -1,6 +1,0 @@
-{
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "class/compiler/libraries/JFlex.jar"
-    ]
-}
