@@ -9,16 +9,15 @@ import static scanner.Tokens.*;
 %class Scan
 %type Tokens
 
-
+string_literal =([\"].*[\"])
+char_literal =([\'].[\'])
 digit = [0-9]
 alpha = [a-zA-Z]
-alpha_num = {alpha}|{digit}
-id = {alpha}({alpha_num})*
 hex_digit = [0-9a-fA-F]
+id = {alpha}({alpha}|{digit})*
 hex_literal = 0[xX]{hex_digit}({hex_digit})*
 decimal_literal =  {digit}({digit})*
-int_literal = {hex_literal} | {decimal_literal}
-espacio = [ ,\t,\r,\n]+
+espacio = [ \t\r\n]+
 
 %{
     public String lexeme;
@@ -43,16 +42,17 @@ continue            {lexeme=yytext(); column=yycolumn; line=yyline; return Conti
 callout             {lexeme=yytext(); column=yycolumn; line=yyline; return Callout;}      
 true                {lexeme=yytext(); column=yycolumn; line=yyline; return True;}      
 false               {lexeme=yytext(); column=yycolumn; line=yyline; return False;}
-string              {lexeme=yytext(); column=yycolumn; line=yyline; return String;}      
 
 /* Espacios */
 {espacio} {/*Ignore*/}
 "//".* {/*Ignore*/}
 
 /* indentificadores*/
+{string_literal}    {lexeme=yytext(); column=yycolumn; line=yyline; return StringLiteral;}
+{char_literal}      {lexeme=yytext(); column=yycolumn; line=yyline; return CharLiteral;}
 {id}                {lexeme=yytext(); column=yycolumn; line=yyline; return Id;}
+{hex_literal}       {lexeme=yytext(); column=yycolumn; line=yyline; return HexLiteral;}
 {decimal_literal}   {lexeme=yytext(); column=yycolumn; line=yyline; return DecimalLiteral;}
-{int_literal}       {lexeme=yytext(); column=yycolumn; line=yyline; return IntLiteral;}
 
 /* comparadores y operadores*/
 ","                 {lexeme=yytext(); column=yycolumn; line=yyline; return Comma;} 

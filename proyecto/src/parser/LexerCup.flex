@@ -11,7 +11,8 @@ import java_cup.runtime.Symbol;
 %char
 %state STRING
 
-
+string_literal =([\"].*[\"])
+char_literal =([\'].[\'])
 digit = [0-9]
 alpha = [a-zA-Z]
 hex_digit = [0-9a-fA-F]
@@ -46,7 +47,6 @@ continue            {return new Symbol(sym.Continue, yychar, yyline, yytext());}
 callout             {return new Symbol(sym.Callout, yychar, yyline, yytext());}      
 true                {return new Symbol(sym.True, yychar, yyline, yytext());}      
 false               {return new Symbol(sym.False, yychar, yyline, yytext());}
-string              {return new Symbol(sym.String, yychar, yyline, yytext());}      
 
 /* Espacios */
 
@@ -59,6 +59,8 @@ string              {return new Symbol(sym.String, yychar, yyline, yytext());}
 {alpha}             {return new Symbol(sym.Alpha, yychar, yyline, yytext());}
 {hex_digit}         {return new Symbol(sym.HexDigit, yychar, yyline, yytext());}
 */
+{string_literal}    {return new Symbol(sym.StringLiteral, yychar, yyline, yytext());} 
+{char_literal}      {return new Symbol(sym.CharLiteral, yychar, yyline, yytext());} 
 {id}                {return new Symbol(sym.Id, yychar, yyline, yytext());} 
 {hex_literal}       {return new Symbol(sym.HexLiteral, yychar, yyline, yytext());} 
 {decimal_literal}   {return new Symbol(sym.DecimalLiteral, yychar, yyline, yytext());} 

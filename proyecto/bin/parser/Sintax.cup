@@ -25,10 +25,9 @@ terminal Class, Program, Void, Int, Boolean, If, Else, For, Return, Break, Conti
     Asign, AsignAdd, AsignSubs, Add, Substract, Multiplication, Division, Mod, 
     LessThan, GreaterThan, LessEqualThan, GreaterEqualThan, Equal, NotEqual, And, Or, 
     SemiColom, LeftParent, RightParent, LeftBracket, RightBracket, LeftKey, RightKey,
-    ParentOpenClose, BracketOpenClose, KeyOpenClose,
-    StringLiteral, Callout, Exclam, Comma, ERROR; 
+    ParentOpenClose, BracketOpenClose, KeyOpenClose, Callout, Exclam, Comma, ERROR; 
 
-terminal String String, Digit, Id, HexLiteral, DecimalLiteral; 
+terminal String StringLiteral, CharLiteral, Id, HexLiteral, DecimalLiteral; 
 
 non terminal INICIO, PROGRAM, PROGRAM_FIELD_DECL, PROGRAM_METHOD_DECL, FIELD_DECL, DECL, 
     FIELD_CLOSE, METHOD_DECL, M_DECL, BLOCK, BLOCK_VAR_DECL, BLOCK_STATEMENT, VAR_DECL, 
@@ -178,10 +177,14 @@ DECL ::= Id:i FIELD_CLOSE:fc
         Nodo tmp = new Nodo("DECL");
         tmp.setNumNodo(parser.contador++);
         
-        Nodo item = new Nodo("Id"); 
-        item.setNumNodo(parser.contador++);
-        item.setValor(i.toString()); 
-        tmp.addHijo((Nodo) item);
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
+        tmp.addHijo((Nodo) ID);
 
         tmp.addHijo((Nodo) fc);
         
@@ -192,10 +195,14 @@ DECL ::= Id:i FIELD_CLOSE:fc
         Nodo tmp = new Nodo("DECL");
         tmp.setNumNodo(parser.contador++);
         
-        Nodo item = new Nodo("Id"); 
-        item.setNumNodo(parser.contador++);
-        item.setValor(i.toString()); 
-        tmp.addHijo((Nodo) item);
+        Nodo ID = new Nodo("Id"); 
+        ID.setNumNodo(parser.contador++);
+        ID.setValor(i.toString()); 
+        
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
+        tmp.addHijo((Nodo) ID);
 
         Nodo lb = new Nodo("LeftBracket"); 
         lb.setNumNodo(parser.contador++);
@@ -253,6 +260,10 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo LP = new Nodo("LeftParent"); 
@@ -277,6 +288,9 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo LP = new Nodo("LeftParent"); 
@@ -298,6 +312,10 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString());
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo POC = new Nodo("ParentOpenClose"); 
@@ -322,6 +340,10 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo POC = new Nodo("ParentOpenClose"); 
@@ -345,6 +367,10 @@ M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo RP = new Nodo("RightParent"); 
@@ -366,6 +392,10 @@ M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo C = new Nodo("Comma"); 
@@ -486,6 +516,10 @@ VAR_ID ::= Id:i Comma VAR_ID:vi
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo C = new Nodo("Comma"); 
@@ -505,6 +539,10 @@ VAR_ID ::= Id:i Comma VAR_ID:vi
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+        
         tmp.addHijo((Nodo) ID);
 
         Nodo SC = new Nodo("SemiColom"); 
@@ -613,6 +651,10 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         Nodo Asi = new Nodo("Asign"); 
@@ -803,7 +845,7 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
         
         RESULT=tmp;
 :} 
-            | Callout LeftParent StringLiteral RightParent
+            | Callout LeftParent StringLiteral:sl RightParent
 {:
         Nodo tmp = new Nodo("METHOD_CALL");
         tmp.setNumNodo(parser.contador++);
@@ -820,7 +862,7 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
 
         Nodo ST = new Nodo("StringLiteral"); 
         ST.setNumNodo(parser.contador++);
-        ST.setValor("StringLiteral"); 
+        ST.setValor(sl.toString()); 
         tmp.addHijo((Nodo) ST);
 
         Nodo RP = new Nodo("RightParent"); 
@@ -830,7 +872,7 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
         
         RESULT=tmp;
 :} 
-            | Callout LeftParent StringLiteral METHOD_CALL_CALLOUT:mcc
+            | Callout LeftParent StringLiteral:sl METHOD_CALL_CALLOUT:mcc
 {:
         Nodo tmp = new Nodo("METHOD_CALL");
         tmp.setNumNodo(parser.contador++);
@@ -847,7 +889,7 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
 
         Nodo ST = new Nodo("StringLiteral"); 
         ST.setNumNodo(parser.contador++);
-        ST.setValor("StringLiteral"); 
+        ST.setValor(sl.toString()); 
         tmp.addHijo((Nodo) ST);
 
         tmp.addHijo((Nodo) mcc);
@@ -928,6 +970,10 @@ METHOD_NAME ::= Id:i
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString()); 
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         RESULT=tmp;
@@ -942,6 +988,10 @@ LOCATION ::= Id:i LOCATION_EXPR:le
         Nodo ID = new Nodo("Id"); 
         ID.setNumNodo(parser.contador++);
         ID.setValor(i.toString());
+
+        ID.setIdentifier((String) i.toString());
+        ID.setLocation((int) iright + 1); 
+
         tmp.addHijo((Nodo) ID);
 
         tmp.addHijo((Nodo) le);
@@ -1068,14 +1118,14 @@ CALLOUT_ARG ::= EXPR:e
 
         RESULT=tmp;
 :}
-            | StringLiteral
+            | StringLiteral:sl
 {:
         Nodo tmp = new Nodo("CALLOUT_ARG");
         tmp.setNumNodo(parser.contador++);
 
         Nodo SL = new Nodo("StringLiteral"); 
         SL.setNumNodo(parser.contador++);
-        SL.setValor("StringLiteral"); 
+        SL.setValor(sl.toString()); 
         tmp.addHijo((Nodo) SL);
 
         RESULT=tmp;
@@ -1302,6 +1352,14 @@ LITERAL ::= INT_LITERAL:il
 
         RESULT=tmp;
 :}
+        | CharLiteral:cl
+{:
+        Nodo tmp = new Nodo("CharLiteral");
+        tmp.setNumNodo(parser.contador++);
+        tmp.setValor(cl.toString()); 
+
+        RESULT=tmp;
+:}
 ; 
 
 INT_LITERAL ::= DecimalLiteral:d
@@ -1312,6 +1370,7 @@ INT_LITERAL ::= DecimalLiteral:d
         Nodo DL = new Nodo("DecimalLiteral"); 
         DL.setNumNodo(parser.contador++);
         DL.setValor(d.toString()); 
+        DL.setLocation((int) dright + 1); 
         tmp.addHijo((Nodo) DL);
 
         RESULT=tmp;
@@ -1324,13 +1383,14 @@ INT_LITERAL ::= DecimalLiteral:d
         Nodo HL = new Nodo("HexLiteral"); 
         HL.setNumNodo(parser.contador++);
         HL.setValor(h.toString()); 
+        HL.setLocation((int) hright + 1); 
         tmp.addHijo((Nodo) HL);
 
         RESULT=tmp;
 :}
 ; 
 
-BOOL_LITERAL ::= True
+BOOL_LITERAL ::= True:tt
 {:
         Nodo tmp = new Nodo("BOOL_LITERAL");
         tmp.setNumNodo(parser.contador++);
@@ -1338,11 +1398,12 @@ BOOL_LITERAL ::= True
         Nodo T = new Nodo("True"); 
         T.setNumNodo(parser.contador++);
         T.setValor("true"); 
+        T.setLocation((int) ttright + 1); 
         tmp.addHijo((Nodo) T);
 
         RESULT=tmp;
 :}
-            | False 
+            | False:ff 
 {:
         Nodo tmp = new Nodo("BOOL_LITERAL");
         tmp.setNumNodo(parser.contador++);
@@ -1350,6 +1411,7 @@ BOOL_LITERAL ::= True
         Nodo F = new Nodo("False"); 
         F.setNumNodo(parser.contador++);
         F.setValor("false"); 
+        F.setLocation((int) ffright + 1); 
         tmp.addHijo((Nodo) F);
 
         RESULT=tmp;

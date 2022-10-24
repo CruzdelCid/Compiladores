@@ -11,7 +11,7 @@ public class Test {
 
         try {
             Path path = Paths.get("");
-		    String ruta = path.toAbsolutePath().toString() + "/src/program.txt";
+		    String ruta = path.toAbsolutePath().toString() + "/program.txt";
             char n = (char) 92; 
             ruta = ruta.replace(n, '/');
             Reader lector = new BufferedReader(new FileReader(ruta));

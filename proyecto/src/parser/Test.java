@@ -1,11 +1,13 @@
 package parser;
 
+import semantic.Semantic;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,7 +25,7 @@ public class Test {
         return 1; 
     }
 
-    public static void graficar(Nodo raiz){
+    public static void graficar(Nodo raiz) throws InterruptedException{
         FileWriter archivo = null;
         PrintWriter pw = null;
         String cadena = graficarNodo(raiz);
@@ -42,12 +44,16 @@ public class Test {
         
         try {
             String cmd = "cmd /c dot -Tpng arbol.dot -o arbol.png";
-            Runtime.getRuntime().exec(cmd);
+            Runtime.getRuntime().exec(cmd).waitFor();     
+            
+            mover(); 
+
         } catch (IOException ioe) {
             System.out.println(ioe +" 2");
         }
         
     }
+    
     
     public static String graficarNodo(Nodo nodo){
         String cadena = "";
@@ -66,16 +72,37 @@ public class Test {
         return cadena;
     }
 
+    public static void mover() throws IOException{
+        Path path = Paths.get("");
+        String rutaM = path.toAbsolutePath().toString();
+
+        Path rutaSym = Paths.get(rutaM + "/src/ast/arbol.dot");
+        if (Files.exists(rutaSym)) {
+            Files.delete(rutaSym);
+        }
+        Files.move(
+                Paths.get(rutaM + "/arbol.dot"), 
+                Paths.get(rutaM + "/src/ast/arbol.dot")
+        );
+        Path rutaSin = Paths.get(rutaM + "/src/ast/arbol.png");
+        if (Files.exists(rutaSin)) {
+            Files.delete(rutaSin);
+        }
+        Files.move(
+                Paths.get(rutaM + "/arbol.png"), 
+                Paths.get(rutaM + "/src/ast/arbol.png")
+        );
+    }
 
     public static void parsear(String filename) throws IOException {
         System.out.println(filename);
 
         String ST = "";
         Path path = Paths.get("");
-        String ruta = path.toAbsolutePath().toString() + "/src/" + filename; // Es necesario cambiar ruta desde CMD
+        String ruta = path.toAbsolutePath().toString() + "/" + filename; // Es necesario cambiar ruta desde CMD
         char caracter = (char) 92; 
         ruta = ruta.replace(caracter, '/');
-        System.out.println(ruta);
+        System.out.println("Ruta de Ejecucion:"+ruta);
 
         try {
             File archivo = new File(ruta);
@@ -90,14 +117,28 @@ public class Test {
             e.printStackTrace();
         }
 
-        System.out.println(ST);
 
-        Parser s = new Parser(new parser.ScannerCup(new StringReader(ST)));
+        System.out.println("\nInput Program:\n" + ST);
+
+        parser.ScannerCup Scannerr = new parser.ScannerCup(new StringReader(ST)); 
+
+        Parser s = new Parser(Scannerr);
         
         try {
             s.parse();
             System.out.println("Analisis realizado correctamente");
-            graficar(s.padre);
+            //graficar(s.padre);
+
+            // Declaramos el objeto semantic 
+            Semantic semanticAnalizer = new Semantic(s.padre); 
+
+            System.out.println("\n\nANALISIS SEMANTICO\n");
+
+            semanticAnalizer.createSimbolTable(); //Ejercutamos el recorrido
+            semanticAnalizer.printErrores();
+            // huebo errores y sí 
+            // imprime los errores
+            // exception, para la ejecucion 
 
         } catch (Exception ex) {
             Symbol sym = s.getS();

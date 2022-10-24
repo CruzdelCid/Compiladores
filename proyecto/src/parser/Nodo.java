@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 public class Nodo {
     private String nombre;
-    private ArrayList<Nodo> hijos;
     private String valor;
     private int numNodo;
+    private String identifier; 
     private int location;
+    private ArrayList<Nodo> hijos;
     
     public Nodo(String nombre)
     {
@@ -79,7 +80,20 @@ public class Nodo {
         this.numNodo = numNodo;
     }
 
-    
+    /**
+     * @return the identifier
+     */
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    /**
+     * @param identifier the identifier to set
+     */
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
     /**
      * @return the location
      */
