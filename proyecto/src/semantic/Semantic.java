@@ -25,6 +25,10 @@ public class Semantic {
     private ErrorR tablaErrores;
 
 
+    //tabla de errores 
+    private TablaParametros tablaParams;
+
+
     //Tipo de declaracion
     private String tipo; 
 
@@ -50,6 +54,10 @@ public class Semantic {
         tablaErrores.printTable();
     }
 
+    public void printParametros(){
+        tablaParams.printParametros();
+    }
+
     
     //METODOS//
 
@@ -62,6 +70,7 @@ public class Semantic {
         this.tabla = new Simbolo(); 
         this.tablaDuplicidad = new Simbolo(); 
         this.tablaErrores = new ErrorR(); 
+        this.tablaParams = new TablaParametros(); 
         this.tipo = "";
         this.idScope = 0;
 
@@ -101,7 +110,6 @@ public class Semantic {
      */
     private int scanerNodos(Nodo raiz){
 
-
         String nombre = raiz.getNombre();
 
         // VERIFICACION DE FIELD DECLARATION 
@@ -109,34 +117,42 @@ public class Semantic {
             this.field_dcl = true;
         }
 
+        // convierte una variable a tipo vector añadiendole size 
+        else if(this.field_dcl && nombre.equals("DecimalLiteral")){
+            int size = Integer.parseInt(raiz.getValor());
+            int method = 0; 
+            this.tabla.toMethodVector(last, method, size);
+        }
+        // convierte una variable a tipo vector añadiendole size 
+        else if(this.field_dcl && nombre.equals("HexLiteral")){
+            int size = Integer.parseInt(raiz.getValor(), 16);
+            int method = 0; 
+            this.tabla.toMethodVector(last, method, size);
+        }
+
         
         // VERIFICACION DE METHOD DECLARATION 
-        if(nombre.equals("METHOD_DECL")){
+        else if(nombre.equals("METHOD_DECL")){
             this.method_dcl = true;
         }
 
-        else if(this.method_dcl && nombre.equals("RightParent")){
-            System.out.println("-------------------------------------------xxxxx  1");
+        else if(this.method_dcl && nombre.equals("LeftParent")){
             this.idScope += 1; 
             this.bloques.add(idScope); 
-            System.out.println("-------------------------------------------xxxxx  2");
 
-            this.method_dcl = false; 
+            this.method_dcl = false;
+            this.method_dclared = true;  // bandera  para no crear un nuevo scope 
         }
 
         else if(this.method_dcl && nombre.equals("ParentOpenClose")){
-            
             this.declaracion = false; 
             this.field_dcl = false; 
-            this.method_dcl = false;
-        }
-
-        else if (nombre.equals("M_DECL")){
-            this.method_dclared = true;
+            this.method_dcl = false; 
         }
 
         // se bajan todas las banderas 
         else if(this.method_dclared && nombre.equals("LeftKey")){
+            this.tablaParams.getParameters(last); // se imprimen los parametros de esa funcion
             this.declaracion = false; 
             this.field_dcl = false; 
             this.method_dclared = false;  
@@ -155,8 +171,8 @@ public class Semantic {
         }
 
         else if(nombre.equals("Void") || 
-            raiz.getNombre().equals("Int") || 
-            raiz.getNombre().equals("Boolean")){
+            nombre.equals("Int") || 
+            nombre.equals("Boolean")){
             
             this.declaracion = true; 
             this.tipo = raiz.getValor(); 
@@ -173,14 +189,18 @@ public class Semantic {
 
             // verifica que la variable no esté creada en este scope
             if(this.tabla.containsSimbolScope(identifier, scope)){
-                System.out.println("Doble declaracion de variables: " + identifier);
+                //System.out.println("Doble declaracion de variables: " + identifier);
                 this.tablaErrores.addError(id, identifier, scope, location);
             }
             else{
                 this.tabla.addSimbol(id, identifier, type, scope, location, 0, 0);
+                
+                if(this.method_dclared){
+                    this.tablaParams.newFila(id, this.last, identifier, type);
+                }
             }
 
-            if(this.field_dcl){
+            if(this.field_dcl || this.method_dcl){
                 this.last = id;
             }
 
@@ -417,5 +437,75 @@ class ErrorR{
                             this.location.get(i));
         }
         System.out.println("");
+    }
+}
+
+
+
+
+
+class Fila{
+    public Integer id; 
+    public Integer id_method;
+    public String identifier; 
+    public String type; 
+
+    public Fila(Integer idN, Integer id_methodN, String identifierN, String typeF){
+        this.id = idN; 
+        this.id_method = id_methodN; 
+        this.identifier = identifierN; 
+        this.type = typeF; 
+    }
+}
+
+class TablaParametros{
+    ArrayList<Fila> filas = new ArrayList<Fila>();
+
+
+    public void newFila(Integer idN, Integer id_methodN, String identifierN, String typeF){
+        Fila nueva = new Fila(idN, id_methodN, identifierN, typeF); 
+        
+        this.filas.add(nueva);
+    }
+
+    public void printParametros(){
+        int end = this.filas.size(); 
+        System.out.println("");
+        System.out.println("TABLA DE PARAMETROS");
+        System.out.format("%5s %10s %10s %10s\n",
+                     "Id","Id_Method", "Identifier", "TypeF");
+        System.out.println("--------------------------------------");
+        
+        for (int i = 0; i < end; i++){
+            System.out.format("%5d %10d %10s %10s\n",
+                            this.filas.get(i).id,
+                            this.filas.get(i).id_method,
+                            this.filas.get(i).identifier,
+                            this.filas.get(i).type
+            );
+        }
+        System.out.println("");
+    }
+
+    public void getParameters(Integer id_method){
+        int end = this.filas.size(); 
+        System.out.println("");
+        System.out.println("TABLA DE PARAMETROS del Metodo: " + id_method.toString());
+        System.out.format("%5s %10s %10s %10s\n",
+                     "Id","Id_Method", "Identifier", "TypeF");
+        System.out.println("--------------------------------------");
+        
+        for (int i = 0; i < end; i++){
+            
+            if(this.filas.get(i).id_method == id_method){
+                System.out.format("%5d %10d %10s %10s\n",
+                            this.filas.get(i).id,
+                            this.filas.get(i).id_method,
+                            this.filas.get(i).identifier,
+                            this.filas.get(i).type
+                );
+            }            
+        }
+        System.out.println("ESOS SON TODOS LOS PARAMETROS");
     }
 }

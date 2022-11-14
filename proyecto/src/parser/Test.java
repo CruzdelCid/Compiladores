@@ -136,6 +136,7 @@ public class Test {
 
             semanticAnalizer.createSimbolTable(); //Ejercutamos el recorrido
             semanticAnalizer.printErrores();
+            semanticAnalizer.printParametros();
             // huebo errores y sí 
             // imprime los errores
             // exception, para la ejecucion 
@@ -165,6 +166,5 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         parsear("programa3.txt");
-        
     }
 }
