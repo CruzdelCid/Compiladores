@@ -15,18 +15,31 @@ public class Compiler {
         target.put("codegen", 6);
 
         // asignar un valor numerico a la instruccion
-        
+        HashMap<String, Integer> instructions = new HashMap<String, Integer>();
+
+        instructions.put("-o", 1);
+        instructions.put("-target", 2);
+        instructions.put("-opt", 3);
+        instructions.put("-debug", 4);
 
         int n = 1; 
         int instruction = 0; 
         String filename = "programa3.txt"; 
 
-         // verificamos que la instruccion esté bien escrita
+         // verificamos que la fase esté bien escrita
          try{
             n = target.get(args);
         }
         catch (Exception e){
             System.out.println("La fase descrita no existe");
+        }
+
+         // verificamos que la instruccion esté bien escrita
+         try{
+            instruction = instructions.get(args);
+        }
+        catch (Exception e){
+            System.out.println("La instruccion descrita no existe");
         } 
         
         if(instruction == 0 && instruction == 1){
