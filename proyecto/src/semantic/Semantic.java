@@ -24,13 +24,17 @@ public class Semantic {
     //tabla de errores 
     private ErrorR tablaErrores;
 
-    //Declaracion de Variable
-    private Boolean declaracion; 
 
     //Tipo de declaracion
     private String tipo; 
 
 
+    //Declaracion de Variable
+    private Boolean declaracion; 
+    private Boolean field_dcl; 
+    private Boolean method_dcl; 
+    private Boolean method_dclared;
+    private Integer last; 
 
 
     //CONSTRUCTOR//  
@@ -50,7 +54,7 @@ public class Semantic {
     //METODOS//
 
     /*
-     * recorrer manda el nodo padre al metodo reccorrer 0
+     * createSimbolTable manda el nodo padre al metodo recorrer
      */
     public void createSimbolTable(){
         //seteo inicial de variables 
@@ -58,29 +62,99 @@ public class Semantic {
         this.tabla = new Simbolo(); 
         this.tablaDuplicidad = new Simbolo(); 
         this.tablaErrores = new ErrorR(); 
-        this.declaracion = false; 
         this.tipo = "";
-        this.idScope = 0;  
+        this.idScope = 0;
+
+        // seteo de banderas 
+        this.declaracion = false; 
+        this.field_dcl = false; 
+        this.method_dcl = false; 
+        this.method_dclared = false;
+        this.last = 0;  
 
         this.recurrer(this.padre); 
     }
 
+
     /*
-     * recurrerR recorrer el arbol AST y crea la tabla  
+     * recurrer recorrer los nodos y los manda al scanerNodos
      */
     private int recurrer(Nodo raiz){
 
-        if(raiz.getNombre().equals("LeftKey")){
+        this.scanerNodos(raiz);
+
+        ArrayList<Nodo> nodos = raiz.getHijos();
+
+        // busqueda recursiva
+        for (Nodo i : nodos){
+            if(i!=null){
+                recurrer(i); 
+            }
+        }
+
+        return 1;
+    }
+
+
+    /*
+     * verfica el nombre y crea la tabla de signos  
+     */
+    private int scanerNodos(Nodo raiz){
+
+
+        String nombre = raiz.getNombre();
+
+        // VERIFICACION DE FIELD DECLARATION 
+        if(nombre.equals("FIELD_DECL")){
+            this.field_dcl = true;
+        }
+
+        
+        // VERIFICACION DE METHOD DECLARATION 
+        if(nombre.equals("METHOD_DECL")){
+            this.method_dcl = true;
+        }
+
+        else if(this.method_dcl && nombre.equals("RightParent")){
+            System.out.println("-------------------------------------------xxxxx  1");
+            this.idScope += 1; 
+            this.bloques.add(idScope); 
+            System.out.println("-------------------------------------------xxxxx  2");
+
+            this.method_dcl = false; 
+        }
+
+        else if(this.method_dcl && nombre.equals("ParentOpenClose")){
+            
+            this.declaracion = false; 
+            this.field_dcl = false; 
+            this.method_dcl = false;
+        }
+
+        else if (nombre.equals("M_DECL")){
+            this.method_dclared = true;
+        }
+
+        // se bajan todas las banderas 
+        else if(this.method_dclared && nombre.equals("LeftKey")){
+            this.declaracion = false; 
+            this.field_dcl = false; 
+            this.method_dclared = false;  
+        }
+
+        // VERIFICACION DEL RESTO DE BLOQUES
+        // creacion de nuevo scope
+        else if(nombre.equals("LeftKey")){
             this.idScope += 1; 
             this.bloques.add(idScope); 
             this.declaracion = false;
-            
         }
-        else if(raiz.getNombre().equals("SemiColom")){
+        else if(nombre.equals("SemiColom")){
             this.declaracion = false;
+            this.field_dcl = false; 
         }
 
-        else if(raiz.getNombre().equals("Void") || 
+        else if(nombre.equals("Void") || 
             raiz.getNombre().equals("Int") || 
             raiz.getNombre().equals("Boolean")){
             
@@ -88,28 +162,16 @@ public class Semantic {
             this.tipo = raiz.getValor(); 
 
         }
-        // Eliminacion de un Scope 
-        else if(raiz.getNombre().equals("RightKey")){
-            
-            int scope = this.bloques.peek(); 
-            this.declaracion = false;
 
-            System.out.println("Vista Scope: " + scope);
-            this.tabla.printTable();
-
-            this.tabla.popScope(scope);
-            this.bloques.pop();
-
-        }
-        // Agregar a la tabla signos (tabla simbolica)
-        else if(raiz.getNombre().equals("Id") && (declaracion==true)){
+        // Agregar a la tabla signos (tabla simbolica) una nueva declaracion
+        else if(nombre.equals("Id") && (declaracion==true)){
             int id = raiz.getNumNodo(); 
             String identifier = raiz.getIdentifier();
             String type = this.tipo; 
             int location = raiz.getLocation(); 
             int scope = this.bloques.peek(); 
 
-            
+            // verifica que la variable no esté creada en este scope
             if(this.tabla.containsSimbolScope(identifier, scope)){
                 System.out.println("Doble declaracion de variables: " + identifier);
                 this.tablaErrores.addError(id, identifier, scope, location);
@@ -117,8 +179,18 @@ public class Semantic {
             else{
                 this.tabla.addSimbol(id, identifier, type, scope, location, 0, 0);
             }
+
+            if(this.field_dcl){
+                this.last = id;
+            }
+
+            if(this.method_dcl){
+                // convierte el ultimo elemento agregado en methodo
+                this.tabla.toMethodVector(id, 1, 0);
+            }
         }
         
+        // Verifica si la variable fue declarada antes de ser usada
         else if(raiz.getNombre().equals("Id") && (declaracion==false)){
             int id = raiz.getNumNodo(); 
             String identifier = raiz.getIdentifier();
@@ -135,21 +207,25 @@ public class Semantic {
             }
         }
 
-        
+        // Eliminacion de un Scope 
+        else if(nombre.equals("RightKey")){
+            
+            int scope = this.bloques.peek(); 
+            this.declaracion = false;
 
+            System.out.println("Vista Scope: " + scope);
+            this.tabla.printTable();
 
+            this.tabla.popScope(scope);
+            this.bloques.pop();
 
-        ArrayList<Nodo> nodos = raiz.getHijos();
-
-        // busqueda recursiva
-        for (Nodo i : nodos){
-            if(i!=null){
-                recurrer(i); 
-            }
         }
 
-        return 1;
+        return 0; 
     }
+
+
+    
 }
 
 
@@ -214,6 +290,30 @@ class Simbolo{
         }
 
         return bandera;
+    }
+
+
+    /*
+     * toMethodVector 
+     * Verifica si un simbolo ya existe en la tabla de simbolos 
+     * @return nada
+     */
+    public void toMethodVector(int idS, int methodS, int sizeS){
+        Boolean bandera = false; 
+        int tamano = this.id.size() - 1; 
+        int i;
+
+        for (i = tamano; i >=0; i--){
+            if(this.id.get(i) == idS){
+                bandera = true; 
+                break; 
+            }
+        }
+
+        if(bandera){
+            this.method.set(i, methodS);
+            this.size.set(i, sizeS); 
+        }
     }
 
 

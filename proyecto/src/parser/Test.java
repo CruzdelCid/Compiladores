@@ -127,7 +127,7 @@ public class Test {
         try {
             s.parse();
             System.out.println("Analisis realizado correctamente");
-            //graficar(s.padre);
+            graficar(s.padre);
 
             // Declaramos el objeto semantic 
             Semantic semanticAnalizer = new Semantic(s.padre); 
@@ -146,8 +146,25 @@ public class Test {
         }
     }
 
+    public void run(String filename){
+        try {
+            parsear("programa3.txt");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        
+    }
+
+    public void debug(String filename){
+        try {
+            parsear("programa3.txt");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
     public static void main(String[] args) throws IOException {
-        parsear("program.txt");
+        parsear("programa3.txt");
         
     }
 }

@@ -1,0 +1,9 @@
+// DECLARACION DE VARIAS VARIABLES 
+class Program {
+    int a, x [3]; 
+    boolean j;
+
+    int hola(){
+
+    }
+}

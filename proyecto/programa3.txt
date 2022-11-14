@@ -1,0 +1,26 @@
+class Program {
+    int a;  // Field declaration
+    int b;
+
+    int pejelagarto(int a, int b){ // method declaration
+        int j; 
+
+        j = b + a; 
+    }
+
+    int dibujar(int a, int b){
+        pejelagarto(1, 2);
+    }
+}
+
+
+
+
+
+// tabla parametros
+// ---------------------------
+// id  nombre  type  id_funcion 
+// 1     a      int     3 
+// 2     b      int     3 
+// 4     c      boolean 3 
+
