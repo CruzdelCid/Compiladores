@@ -1,17 +1,33 @@
 import scanner.ScannerRunner;
+import parser.ParserRunner;
+import java.util.HashMap; 
 public class Compiler {
     public static void main(String[] args) {
-        // verificamos que la instruccion esté bien escrita
-
-
 
         // asignamos un valor numerico a cada target
+        HashMap<String, Integer> target = new HashMap<String, Integer>();
+
+        target.put("scan", 1);
+        target.put("parse", 2);
+        target.put("ast", 3);
+        target.put("semantic", 4);
+        target.put("irt", 5);
+        target.put("codegen", 6);
+
         // asignar un valor numerico a la instruccion
         
 
         int n = 1; 
         int instruction = 0; 
         String filename = "programa3.txt"; 
+
+         // verificamos que la instruccion esté bien escrita
+         try{
+            n = target.get(args);
+        }
+        catch (Exception e){
+            System.out.println("La fase descrita no existe");
+        } 
         
         if(instruction == 0 && instruction == 1){
             // prosigue 
@@ -41,7 +57,17 @@ public class Compiler {
         }
 
         if(n >= 1){
-            // ejecutamos el parser
+            if(instruction == 0){
+                // run
+                parser.run();
+            }
+            else if(instruction == 1){
+                // debug
+                parser.debug();
+            }
+            if(parser.errorHandler()){
+                System.out.println("PARAR TODA LA COMPILACION");
+            }
         }
 
         if(n >= 2){
