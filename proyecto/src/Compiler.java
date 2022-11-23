@@ -2,6 +2,9 @@ import scanner.ScannerRunner;
 import parser.ParserRunner;
 import java.util.HashMap; 
 public class Compiler {
+    // los target se deben poner aquí
+
+
     public static void main(String[] args) {
 
         // asignamos un valor numerico a cada target
@@ -27,7 +30,7 @@ public class Compiler {
         String filename = "programa3.txt"; 
 
          // verificamos que la fase esté bien escrita
-         try{
+        try{
             n = target.get(args);
         }
         catch (Exception e){
@@ -35,7 +38,7 @@ public class Compiler {
         }
 
          // verificamos que la instruccion esté bien escrita
-         try{
+        try{
             instruction = instructions.get(args);
         }
         catch (Exception e){

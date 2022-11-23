@@ -1,0 +1,14 @@
+La información cuando se llama la una variable desde otra, solo se puede acceder a los parametros que se llamen 
+y el resto de parametros en la tabla de signos deben ser excluidos.
+
+Entonces cuando se haga un function call, la tabla de signos desaperecerá y solo se tendrá acceso a la tabla del
+scope 1 practicamente, que son las variables globales. 
+
+Para el chequeo de tipos se hará otro recorrido en el que verificaremos: 
+    - las asignaciones de las variables
+    - los ciclos for 
+    - las condicioneles if 
+    - y la llamada de funciones, que puede pasar practicamente en cualquier lugar, 
+        incluso dentro de las condiciones if y for
+    - Es necesario crear un sistema que maneje ambos casos. 
+
