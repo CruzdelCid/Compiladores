@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class ScannerRunner {
     private Reader lector; 
-    private Boolean errores; 
+    private Boolean errores = false; 
 
     public ScannerRunner(String filename){
         this.errores = false;
@@ -30,16 +30,30 @@ public class ScannerRunner {
         try {
             Scan lexer = new Scan(lector);
 
+            System.out.println("\nIMPRESION DE ERRORES");
+            System.out.format("%5s %10s\n",
+                     "Type","Value");
             while (true) {
                 String tokens;
+                String value;
+
                 try {
                     tokens = lexer.yylex().toString();
+                    value = lexer.yytext(); 
 
                 } catch (Exception e) {
-                    System.out.println("FIN");
+                    if(this.errores == false){
+                        System.out.println("No hubo errores. \n");
+                    }
                     return;
                 }
-                System.out.println(tokens + ": " + lexer.yytext());
+
+                // impresion de los tokens
+                if (tokens.equals("ERROR")){
+                    System.out.format("%5s %10s\n",
+                    tokens, value);
+                    this.errores = true;
+                }
             }
         } catch (Exception ex) {
             // Logger.getLogger(FrmPrincipal.class.getName()).log(Level.SEVERE, null, ex);
@@ -50,16 +64,31 @@ public class ScannerRunner {
         try {
             Scan lexer = new Scan(lector);
 
+            System.out.println("\nIMPRESION DE TOKENS");
+            System.out.format("%5s %10s\n",
+                     "Type","Value");
             while (true) {
                 String tokens;
+                String value;
+
                 try {
                     tokens = lexer.yylex().toString();
+                    value = lexer.yytext(); 
 
                 } catch (Exception e) {
-                    System.out.println("FIN");
+                    if(this.errores == false){
+                        System.out.println("No hubo errores. \n");
+                    }
                     return;
                 }
-                System.out.println(tokens + ": " + lexer.yytext());
+
+                // impresion de los tokens
+                if (tokens.equals("ERROR")){
+                    this.errores = true;
+                }
+
+                System.out.format("%5s %10s\n",
+                    tokens, value);
             }
         } catch (Exception ex) {
             // Logger.getLogger(FrmPrincipal.class.getName()).log(Level.SEVERE, null, ex);

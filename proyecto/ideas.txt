@@ -10,5 +10,4 @@ Para el chequeo de tipos se hará otro recorrido en el que verificaremos:
     - las condicioneles if 
     - y la llamada de funciones, que puede pasar practicamente en cualquier lugar, 
         incluso dentro de las condiciones if y for
-    - Es necesario crear un sistema que maneje ambos casos. 
-
+    - Es necesario crear un sistema que maneje ambos casos.
