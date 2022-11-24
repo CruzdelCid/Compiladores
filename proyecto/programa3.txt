@@ -1,20 +1,18 @@
 class Program {
-    int a;  // Field declaration
+    int a; 
     int b [3];
 
     int pejelagarto(int a, int b){ // method declaration
-
-        b = j;
-
-        return b; 
     }
 
     int pejalagorta(int a, boolean t){
-        int j;
+        a = 1;
+        a = 3 + t; 
+        
     }
 
     int ojala(int a, boolean t){
-        int j;
+        //
     }
 }
 

@@ -29,12 +29,43 @@ public class Simbolo{
 
 
     /*
+     * getTypeSimbol  
+     * @return el tipo de un simbolo a partir de su id 
+     */
+    public String getTypeSimbol(String identifierS){
+        int tamano = this.id.size() - 1; 
+
+        for (int i = tamano; i >=0; i--){
+            if(this.identifier.get(i).equals(identifierS)){
+                return this.type.get(i); 
+            }
+        }
+        return "";
+    }
+
+
+    /*
+     * isFunction 
+     * @return retorna se un simbolo es función no  
+     */
+    public int isFunction(String identifierS){
+        int tamano = this.id.size() - 1; 
+
+        for (int i = tamano; i >=0; i--){
+            if(this.identifier.get(i).equals(identifierS)){
+                return this.method.get(i); 
+            }
+        }
+        return 3;
+    }
+
+
+    /*
      * containsSimbol 
      * Verifica si un simbolo ya existe en la tabla de simbolos 
      * @return un valor booleano indicando si existe o no
      */
     public boolean containsSimbol(String identifierS){
-        
         return this.identifier.contains(identifierS);
     }
 

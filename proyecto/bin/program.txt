@@ -1,0 +1,24 @@
+class Program {
+    int guapo, vector[2]; 
+    void funcion(int l, int j) {
+        int guapo; 
+        int a;
+        int b;
+        boolean b; 
+        a = 35;
+        c = 'a';
+        c = l+j; 
+    }
+
+    void funcion(int l, int j) {
+        int a;
+        a = 35;
+        c = 'a';
+        c = l+j; 
+
+        funcion(2, 2); 
+    }
+}
+
+
+// {"int", "int"}

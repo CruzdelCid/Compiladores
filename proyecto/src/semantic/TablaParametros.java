@@ -1,6 +1,7 @@
 package semantic;
 import java.util.ArrayList;
 // import java.util.Stack;
+import java.util.Stack;
 
 
 public class TablaParametros{
@@ -11,13 +12,6 @@ public class TablaParametros{
         Fila nueva = new Fila(idN, id_methodN, identifierN, typeF); 
         this.filas.add(nueva);
     }
-
-    
-
-
-
-
-
 
     // imprime todos los parametros
     public void printParametros(){
@@ -39,7 +33,7 @@ public class TablaParametros{
         System.out.println("");
     }
 
-    public void getParameters(Integer id_method){
+    public void printGetParameters(Integer id_method){
         int end = this.filas.size(); 
         System.out.println("");
         System.out.println("TABLA DE PARAMETROS del Metodo: " + id_method.toString());
@@ -59,6 +53,20 @@ public class TablaParametros{
             }            
         }
         System.out.println("ESOS SON TODOS LOS PARAMETROS");
+    }
+
+    public void ponerParams(Stack<String> operacion, Stack<String> type, Integer id_funcion){
+        int end = this.filas.size() - 1;
+
+        for (int i = end; i >= 0; i--){
+            Fila fila = this.filas.get(i);
+
+            if (fila.id_method.equals(id_funcion)){
+                type.add(fila.type); 
+                operacion.add("Function"); 
+            }
+
+        }
     }
 }
 
