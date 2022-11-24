@@ -11,3 +11,16 @@ Para el chequeo de tipos se hará otro recorrido en el que verificaremos:
     - y la llamada de funciones, que puede pasar practicamente en cualquier lugar, 
         incluso dentro de las condiciones if y for
     - Es necesario crear un sistema que maneje ambos casos.
+
+
+
+Vamos a copiar el análisis de unicidad como base para hacer el análisis de tipos
+El de tipos se va a hacer por medio de un Stack 
+Casos: 
+- For
+- If
+- return 
+
+
+Pullir el análisis de unicidad y empaquetarlo 
+Porque el análisis de unicidad va a ser la base para nuestro análisis de tipos.

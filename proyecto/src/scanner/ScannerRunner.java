@@ -1,7 +1,6 @@
 package scanner;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Path;
@@ -22,7 +21,6 @@ public class ScannerRunner {
             ruta = ruta.replace(n, '/');
             this.lector = new BufferedReader(new FileReader(ruta));
         } catch (Exception e) {
-            // TODO: handle exception
         }
     }
 
