@@ -3,11 +3,18 @@ class Program {
     int b [3];
 
     int pejelagarto(int a, int b){ // method declaration
-        int j; 
 
-        j = b;
+        b = j;
 
-        return j; 
+        return b; 
+    }
+
+    int pejalagorta(int a, boolean t){
+        int j;
+    }
+
+    int ojala(int a, boolean t){
+        int j;
     }
 }
 
