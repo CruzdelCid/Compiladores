@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 public class Ast {
     private Nodo padre;
+    private Boolean errores; 
 
     public Ast(Nodo raiz){
         this.padre = raiz;
@@ -21,6 +22,10 @@ public class Ast {
         } catch (Exception e) {
             System.out.println("\nERROR: No fue posible graficar el arbol.\n");
         }
+    }
+
+    public void debug(){
+        this.run(); 
     }
 
     public void graficar(Nodo raiz) throws InterruptedException{

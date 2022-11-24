@@ -15,5 +15,10 @@ class Program {
         a = 35;
         c = 'a';
         c = l+j; 
+
+        funcion(2, 2); 
     }
 }
+
+
+// {"int", "int"}

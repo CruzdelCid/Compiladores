@@ -91,7 +91,7 @@ public class ScannerRunner {
                     tokens, value);
             }
         } catch (Exception ex) {
-            // Logger.getLogger(FrmPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            // 
         }
     }
 

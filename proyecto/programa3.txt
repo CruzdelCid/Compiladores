@@ -5,11 +5,9 @@ class Program {
     int pejelagarto(int a, int b){ // method declaration
         int j; 
 
-        j = b + a; 
-    }
+        j = b;
 
-    int dibujar(int a, int b){
-        pejelagarto(1, 2);
+        return j; 
     }
 }
 

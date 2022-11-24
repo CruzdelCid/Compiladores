@@ -45,17 +45,12 @@ public class ParserRunner {
         
         try {
             sintax.parse();
-            System.out.println("Analisis realizado correctamente");
+            //System.out.println("Analisis realizado correctamente");
 
             // GUARDAMOS EL PADRE EN LA CLASE 
             this.padre = sintax.padre; 
 
             /*
-            // GRAFICACION DEL NODO
-            Ast graph = new Ast(sintax.padre); 
-            graph.run(); 
-            
-
             // ANÁLISIS SEMANTICO 
             Semantic semanticAnalizer = new Semantic(sintax.padre); 
             System.out.println("\n\nANALISIS SEMANTICO\n");

@@ -1,4 +1,5 @@
 import scanner.ScannerRunner;
+import semantic.Semantic;
 import parser.Nodo;
 import parser.ParserRunner;
 import java.util.HashMap;
@@ -26,13 +27,15 @@ public class Compiler {
         instructions.put("-o", 1);
         instructions.put("-opt", 2);
         instructions.put("-h", 3);
+        instructions.put("--help", 3);
         instructions.put("-target", 4);
         instructions.put("-debug", 5);
     }
 
     // mensaje de error para argumentos
     public static String errorMsg = """
-        -h  
+
+        -h  --help
             <filename> -o <outname>
             <filename> -target <stage>
             <filename> -opt <opt_stage>
@@ -50,7 +53,7 @@ public class Compiler {
 
     public static void main(String[] args) {
         // parametros 
-        args = new String[] {"programa3.txt", "-target", "ast"};
+        args = new String[] {"programa3.txt", "-target", "semantic"};
         String filename = "";         
         String instruction = ""; 
         String fase = "";
@@ -128,28 +131,32 @@ public class Compiler {
 
         System.out.println("**********COMPILATION********\n");
 
-        System.out.println("filename: " + filename);
-        System.out.println("instruction: " + inst);
-        System.out.println("number target: " + n);
+        //System.out.println("filename: " + filename);
+        //System.out.println("instruction: " + inst);
+        //System.out.println("number target: " + n);
         // EJECUCIÓN DE INSTRUCCIONES TARGET Y DEBUG
         // Ejucucion scan 
         if(n >= 1){
-            
             ScannerRunner scanner = new ScannerRunner(filename); 
 
             if(inst == 4){
-                System.out.println("\nstaging: scanning");
+                System.out.println("\nstaging: scanning\n");
                 scanner.run();
             }
             else if(inst == 5){
-                System.out.println("\ndebuging: scanning");
+                System.out.println("\ndebuging: scanning\n");
                 scanner.debug();
             }
+
             if(scanner.errorHandler()){
-                System.out.println("ERROR: Tokens no reconocidos. \n\nstopping: scanning");
+                System.out.println("ERROR: Tokens no reconocidos. \n\nstopping: scanning\n");
                 System.exit(1);
             }
+            else{
+                System.out.println("SUCCESS: Análisis lexico realizado correctamente");
+            }
         }
+
 
         // Ejucucion parse 
         Nodo padre = new Nodo(fase);
@@ -157,29 +164,47 @@ public class Compiler {
             
             ParserRunner parser = new ParserRunner(filename); 
             if(inst == 4){
-                System.out.println("\nstaging: parsing");
+                System.out.println("\nstaging: parsing\n");
                 parser.run();
             }
             else if(inst == 5){
-                System.out.println("\ndebuging: parsing");
+                System.out.println("\ndebuging: parsing\n");
                 parser.debug();
             }
+            
             if(parser.errorHandler()){
-                System.out.println("ERROR: El código no cumple con la gramática stablecida. \n\nstopping: parsing");
+                System.out.println("ERROR: El código no cumple con la gramática stablecida. \n\nstopping: parsing\n");
                 System.exit(1);
             }
-            padre = parser.getPadre(); 
+            else{
+                System.out.println("SUCCESS: Análisis gramatical realizado correctamente");
+                padre = parser.getPadre(); //guardamos el nodo padre 
+            }
+
+            
         }
 
         // Ejecucion del ast
         if(n >= 3){
-            System.out.println("\nstaging: ast graph");
             Ast graph = new Ast(padre); 
-            graph.run(); 
+            if(inst == 4){
+                System.out.println("\nstaging: ast graph\n");
+                graph.run(); 
+            }
+            else if(inst == 5){
+                System.out.println("\ndebuging: ast graph\n");
+                graph.debug();
+            }
         }
 
+        // Ejecucion del semantic
         if(n >= 4){
-            // ejecutamos el semactic 
+            System.out.println("\nstaging: semantic analysis\n");
+            Semantic semant = new Semantic(padre); 
+
+            semant.createSimbolTable(); //Ejercutamos el recorrido
+            semant.printErrores();
+            semant.printParametros();
         }
 
         if(n >= 5){
