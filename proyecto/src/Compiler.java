@@ -41,7 +41,7 @@ public class Compiler {
             <filename> -opt <opt_stage>
             <filename> -debug <stage>
 
-        stages:
+        fases:
             scan 
             parse
             ast
@@ -53,7 +53,7 @@ public class Compiler {
 
     public static void main(String[] args) {
         // parametros 
-        args = new String[] {"programa3.txt", "-debug", "semantic"};
+        args = new String[] {"programa3.txt", "-target", "semantic"};
         String filename = "";         
         String instruction = ""; 
         String fase = "";
@@ -112,6 +112,8 @@ public class Compiler {
 
         
 
+        
+
         // verficacion de instrucciones para parar operacion
         if(inst == 1){
             System.out.println("Instruccion -o");
@@ -129,18 +131,20 @@ public class Compiler {
 
         System.out.println("**********COMPILATION********\n");
 
-  
+        //System.out.println("filename: " + filename);
+        //System.out.println("instruction: " + inst);
+        //System.out.println("number target: " + n);
         // EJECUCIÓN DE INSTRUCCIONES TARGET Y DEBUG
         // Ejucucion scan 
         if(n >= 1){
             ScannerRunner scanner = new ScannerRunner(filename); 
 
             if(inst == 4){
-                System.out.println("\n>>> staging: scanning\n");
+                System.out.println("\nstaging: scanning\n");
                 scanner.run();
             }
             else if(inst == 5){
-                System.out.println("\n>>> debuging: scanning\n");
+                System.out.println("\ndebuging: scanning\n");
                 scanner.debug();
             }
 
@@ -160,11 +164,11 @@ public class Compiler {
             
             ParserRunner parser = new ParserRunner(filename); 
             if(inst == 4){
-                System.out.println("\n>>> staging: parsing\n");
+                System.out.println("\nstaging: parsing\n");
                 parser.run();
             }
             else if(inst == 5){
-                System.out.println("\n>>> debuging: parsing\n");
+                System.out.println("\ndebuging: parsing\n");
                 parser.debug();
             }
             
@@ -184,35 +188,28 @@ public class Compiler {
         if(n >= 3){
             Ast graph = new Ast(padre); 
             if(inst == 4){
-                System.out.println("\n>>> staging: ast graph\n");
+                System.out.println("\nstaging: ast graph\n");
                 graph.run(); 
             }
             else if(inst == 5){
-                System.out.println("\n>>> debuging: ast graph\n");
+                System.out.println("\ndebuging: ast graph\n");
                 graph.debug();
             }
-
-            // el error handler está dentro de la clase AST 
         }
 
         // Ejecucion del semantic
         if(n >= 4){
-            Semantic semant = new Semantic(padre);
-            if(inst == 4){
-                System.out.println("\n>>> staging: semantic analysis\n");
-                semant.run(); 
-            }
-            else if(inst == 5){
-                System.out.println("\n>>> debuging: semantic analysis\n");
-                semant.debug();
-            }
+            System.out.println("\nstaging: semantic analysis\n");
+            Semantic semant = new Semantic(padre); 
 
-            // El error handler está dentro de la clase Semantic
+            semant.createSimbolTable(); //Ejercutamos el recorrido
+            semant.printErrores();
+            semant.printParametros();
         }
 
         if(n >= 5){
-            
-        }// ejecutamos el ist 
+            // ejecutamos el ist 
+        }
 
         if(n >= 6){
             // generamos codigo 

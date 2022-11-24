@@ -1,7 +1,7 @@
 package parser;
 
 import ast.Ast;
-//import semantic.Semantic;
+import semantic.Semantic;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,13 +61,13 @@ public class Test {
             // graficar(s.padre);
 
             // Declaramos el objeto semantic 
-            //Semantic semanticAnalizer = new Semantic(s.padre); 
+            Semantic semanticAnalizer = new Semantic(s.padre); 
 
             System.out.println("\n\nANALISIS SEMANTICO\n");
 
-            // semanticAnalizer.createSimbolTable(); //Ejercutamos el recorrido
-            // semanticAnalizer.printErrores();
-            // semanticAnalizer.printParametros();
+            semanticAnalizer.createSimbolTable(); //Ejercutamos el recorrido
+            semanticAnalizer.printErrores();
+            semanticAnalizer.printParametros();
             // huebo errores y sí 
             // imprime los errores
             // exception, para la ejecucion 
@@ -82,6 +82,7 @@ public class Test {
         try {
             parsear("programa3.txt");
         } catch (Exception e) {
+            // TODO: handle exception
         }
         
     }
@@ -90,6 +91,7 @@ public class Test {
         try {
             parsear("programa3.txt");
         } catch (Exception e) {
+            // TODO: handle exception
         }
     }
 

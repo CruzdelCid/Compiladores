@@ -12,6 +12,13 @@ public class TablaParametros{
         this.filas.add(nueva);
     }
 
+    
+
+
+
+
+
+
     // imprime todos los parametros
     public void printParametros(){
         int end = this.filas.size(); 
@@ -32,7 +39,7 @@ public class TablaParametros{
         System.out.println("");
     }
 
-    public void printGetParameters(Integer id_method){
+    public void getParameters(Integer id_method){
         int end = this.filas.size(); 
         System.out.println("");
         System.out.println("TABLA DE PARAMETROS del Metodo: " + id_method.toString());
@@ -52,20 +59,6 @@ public class TablaParametros{
             }            
         }
         System.out.println("ESOS SON TODOS LOS PARAMETROS");
-    }
-
-    public void ponerParams(ArrayList<String> type, ArrayList<String> operacion, Integer id_funcion){
-        int end = this.filas.size() - 1;
-
-        for (int i = end; i >= 0; i--){
-            Fila fila = this.filas.get(i);
-
-            if (fila.id_method.equals(id_funcion)){
-                type.add(fila.type); 
-                operacion.add("Function"); 
-            }
-
-        }
     }
 }
 
