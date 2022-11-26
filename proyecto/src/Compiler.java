@@ -50,7 +50,6 @@ public class Compiler {
             codegen
     """;
 
-
     public static void main(String[] args) {
         // parametros 
         args = new String[] {"programa3.txt", "-target", "semantic"};

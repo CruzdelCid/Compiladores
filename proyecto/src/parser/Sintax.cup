@@ -46,12 +46,12 @@ INICIO ::= PROGRAM:p {:
         tmp.setNumNodo(parser.contador++);
         tmp.addHijo((Nodo) p);
 	parser.padre = (Nodo) tmp;
-	System.out.println("OK");
+	System.out.println("---> OK");
         RESULT=tmp;
 :}
 ;
 
-PROGRAM ::= Class:c Program KeyOpenClose
+PROGRAM ::= Class:c Program:p KeyOpenClose:koc
 {:
 	Nodo tmp = new Nodo("PROGRAM");
         tmp.setNumNodo(parser.contador++);
@@ -62,37 +62,42 @@ PROGRAM ::= Class:c Program KeyOpenClose
         //c.setSimbol(c); 
         tmp.addHijo((Nodo) C);
 
-        Nodo p = new Nodo("Program"); 
-        p.setNumNodo(parser.contador++);
-        p.setValor("Program"); 
-        tmp.addHijo((Nodo) p);
+        Nodo P = new Nodo("Program"); 
+        P.setNumNodo(parser.contador++);
+        P.setValor("Program"); 
+        P.setLocation((int) pright + 1); 
+        tmp.addHijo((Nodo) P);
 
         Nodo KOC = new Nodo("KeyOpenClose"); 
         KOC.setNumNodo(parser.contador++);
-        KOC.setValor("{}"); 
+        KOC.setValor("{}");
+        KOC.setLocation((int) kocright + 1); 
         tmp.addHijo((Nodo) KOC);
         
         RESULT=tmp;
 :}
-        | Class Program LeftKey PROGRAM_FIELD_DECL:pfd
+        | Class:c Program:p LeftKey:lk PROGRAM_FIELD_DECL:pfd
 {:
         Nodo tmp = new Nodo("PROGRAM");
         tmp.setNumNodo(parser.contador++);
         
-        Nodo c = new Nodo("Class"); 
-        c.setNumNodo(parser.contador++);
-        c.setValor("class"); 
-        tmp.addHijo((Nodo) c);
+        Nodo C = new Nodo("Class"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor("class");
+        C.setLocation((int) cright + 1); 
+        tmp.addHijo((Nodo) C);
 
-        Nodo p = new Nodo("Program"); 
-        p.setNumNodo(parser.contador++);
-        p.setValor("Program"); 
-        tmp.addHijo((Nodo) p);
+        Nodo P = new Nodo("Program"); 
+        P.setNumNodo(parser.contador++);
+        P.setValor("Program"); 
+        P.setLocation((int) pright + 1); 
+        tmp.addHijo((Nodo) P);
 
-        Nodo lk = new Nodo("LeftKey"); 
-        lk.setNumNodo(parser.contador++);
-        lk.setValor("{"); 
-        tmp.addHijo((Nodo) lk);
+        Nodo LK = new Nodo("LeftKey"); 
+        LK.setNumNodo(parser.contador++);
+        LK.setValor("{"); 
+        LK.setLocation((int) lkright + 1); 
+        tmp.addHijo((Nodo) LK);
 
         tmp.addHijo((Nodo) pfd); 
         
@@ -122,15 +127,16 @@ PROGRAM_FIELD_DECL ::= FIELD_DECL:fd PROGRAM_FIELD_DECL:pfd
         RESULT=tmp;
 
 :}
-                | RightKey
+                | RightKey:rk
 {:
         Nodo tmp = new Nodo("PROGRAM_FIELD_DECL");
         tmp.setNumNodo(parser.contador++);
         
-        Nodo rk = new Nodo("RightKey"); 
-        rk.setNumNodo(parser.contador++);
-        rk.setValor("}"); 
-        tmp.addHijo((Nodo) rk);
+        Nodo RK = new Nodo("RightKey"); 
+        RK.setNumNodo(parser.contador++);
+        RK.setValor("}");
+        RK.setLocation((int) rkright + 1); 
+        tmp.addHijo((Nodo) RK);
         
         RESULT=tmp;
 :}
@@ -146,15 +152,16 @@ PROGRAM_METHOD_DECL ::= METHOD_DECL:md PROGRAM_METHOD_DECL:pmd
         
         RESULT=tmp;
 :}
-                | RightKey
+                | RightKey:rk
 {:
         Nodo tmp = new Nodo("PROGRAM_METHOD_DECL");
         tmp.setNumNodo(parser.contador++);
         
-        Nodo rk = new Nodo("RightKey"); 
-        rk.setNumNodo(parser.contador++);
-        rk.setValor("}"); 
-        tmp.addHijo((Nodo) rk);
+        Nodo RK = new Nodo("RightKey"); 
+        RK.setNumNodo(parser.contador++);
+        RK.setValor("}");
+        RK.setLocation((int) rkright + 1); 
+        tmp.addHijo((Nodo) RK);
         
         RESULT=tmp;
 :}
@@ -190,7 +197,7 @@ DECL ::= Id:i FIELD_CLOSE:fc
         
         RESULT=tmp;
 :}
-        | Id:i LeftBracket INT_LITERAL:il RightBracket FIELD_CLOSE:fc
+        | Id:i LeftBracket:lb INT_LITERAL:il RightBracket:rb FIELD_CLOSE:fc
 {:
         Nodo tmp = new Nodo("DECL");
         tmp.setNumNodo(parser.contador++);
@@ -204,17 +211,19 @@ DECL ::= Id:i FIELD_CLOSE:fc
 
         tmp.addHijo((Nodo) ID);
 
-        Nodo lb = new Nodo("LeftBracket"); 
-        lb.setNumNodo(parser.contador++);
-        lb.setValor("["); 
-        tmp.addHijo((Nodo) lb);
+        Nodo LB = new Nodo("LeftBracket"); 
+        LB.setNumNodo(parser.contador++);
+        LB.setValor("[");
+        LB.setLocation((int) lbright + 1); 
+        tmp.addHijo((Nodo) LB);
 
         tmp.addHijo((Nodo) il);
 
-        Nodo rb = new Nodo("RightBracket"); 
-        rb.setNumNodo(parser.contador++);
-        rb.setValor("]"); 
-        tmp.addHijo((Nodo) rb);
+        Nodo RB = new Nodo("RightBracket"); 
+        RB.setNumNodo(parser.contador++);
+        RB.setValor("]");
+        RB.setLocation((int) rbright + 1); 
+        tmp.addHijo((Nodo) RB);
 
         tmp.addHijo((Nodo) fc);
         
@@ -222,35 +231,37 @@ DECL ::= Id:i FIELD_CLOSE:fc
 :}
 ; 
 
-FIELD_CLOSE ::= Comma DECL:d
+FIELD_CLOSE ::= Comma:c DECL:d
 {:
         Nodo tmp = new Nodo("FIELD_CLOSE");
         tmp.setNumNodo(parser.contador++);
 
-        Nodo c = new Nodo("Comma"); 
-        c.setNumNodo(parser.contador++);
-        c.setValor(","); 
-        tmp.addHijo((Nodo) c);
+        Nodo C = new Nodo("Comma"); 
+        C.setNumNodo(parser.contador++);
+        C.setValor(",");
+        C.setLocation((int) cright + 1);
+        tmp.addHijo((Nodo) C);
 
         tmp.addHijo((Nodo) d);
         
         RESULT=tmp;
 :}
-		| SemiColom 
+		| SemiColom:sc 
 {:
         Nodo tmp = new Nodo("FIELD_CLOSE");
         tmp.setNumNodo(parser.contador++);
 
-        Nodo sc = new Nodo("SemiColom"); 
-        sc.setNumNodo(parser.contador++);
-        sc.setValor(";"); 
-        tmp.addHijo((Nodo) sc);
+        Nodo SC = new Nodo("SemiColom"); 
+        SC.setNumNodo(parser.contador++);
+        SC.setValor(";"); 
+        SC.setLocation((int) scright + 1);
+        tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
 :}
 ; 
 
-METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md 
+METHOD_DECL ::= TYPE:t Id:i LeftParent:lp M_DECL:md 
 {:
         Nodo tmp = new Nodo("METHOD_DECL");
         tmp.setNumNodo(parser.contador++);
@@ -268,21 +279,23 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
 
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
-        LP.setValor("("); 
+        LP.setValor("(");
+        LP.setLocation((int) lpright + 1);
         tmp.addHijo((Nodo) LP);
 
         tmp.addHijo((Nodo) md);
         
         RESULT=tmp;
 :}
-            | Void Id:i LeftParent M_DECL:md
+            | Void:v Id:i LeftParent:lp M_DECL:md
 {:
         Nodo tmp = new Nodo("METHOD_DECL");
         tmp.setNumNodo(parser.contador++);
 
         Nodo V = new Nodo("Void"); 
         V.setNumNodo(parser.contador++);
-        V.setValor("void"); 
+        V.setValor("void");
+        V.setLocation((int) vright + 1);
         tmp.addHijo((Nodo) V);
         
         Nodo ID = new Nodo("Id"); 
@@ -295,14 +308,15 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
 
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
-        LP.setValor("("); 
+        LP.setValor("(");
+        LP.setLocation((int) lpright + 1);
         tmp.addHijo((Nodo) LP);
 
         tmp.addHijo((Nodo) md);
         
         RESULT=tmp;
 :}
-            | TYPE:t Id:i ParentOpenClose BLOCK:b
+            | TYPE:t Id:i ParentOpenClose:poc BLOCK:b
 {:
         Nodo tmp = new Nodo("METHOD_DECL");
         tmp.setNumNodo(parser.contador++);
@@ -320,21 +334,23 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
 
         Nodo POC = new Nodo("ParentOpenClose"); 
         POC.setNumNodo(parser.contador++);
-        POC.setValor("()"); 
+        POC.setValor("()");
+        POC.setLocation((int) pocright + 1);
         tmp.addHijo((Nodo) POC);
 
         tmp.addHijo((Nodo) b);
         
         RESULT=tmp;
 :}
-            | Void Id:i ParentOpenClose:ppp BLOCK:b
+            | Void:v Id:i ParentOpenClose:poc BLOCK:b
 {:
         Nodo tmp = new Nodo("METHOD_DECL");
         tmp.setNumNodo(parser.contador++);
 
         Nodo V = new Nodo("Void"); 
         V.setNumNodo(parser.contador++);
-        V.setValor("void"); 
+        V.setValor("void");
+        V.setLocation((int) vright + 1);
         tmp.addHijo((Nodo) V);
         
         Nodo ID = new Nodo("Id"); 
@@ -348,7 +364,8 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
 
         Nodo POC = new Nodo("ParentOpenClose"); 
         POC.setNumNodo(parser.contador++);
-        POC.setValor("()"); 
+        POC.setValor("()");
+        POC.setLocation((int) pocright + 1);
         tmp.addHijo((Nodo) POC);
 
         tmp.addHijo((Nodo) b);
@@ -357,7 +374,7 @@ METHOD_DECL ::= TYPE:t Id:i LeftParent M_DECL:md
 :}
 ;
 
-M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
+M_DECL ::= TYPE:t Id:i RightParent:rp BLOCK:b
 {:
         Nodo tmp = new Nodo("M_DECL");
         tmp.setNumNodo(parser.contador++);
@@ -375,14 +392,15 @@ M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
 
         Nodo RP = new Nodo("RightParent"); 
         RP.setNumNodo(parser.contador++);
-        RP.setValor(")"); 
+        RP.setValor(")");
+        RP.setLocation((int) rpright + 1);
         tmp.addHijo((Nodo) RP);
 
         tmp.addHijo((Nodo) b);
         
         RESULT=tmp;
 :}
-        | TYPE:t Id:i Comma M_DECL:md
+        | TYPE:t Id:i Comma:c M_DECL:md
 {:
         Nodo tmp = new Nodo("M_DECL");
         tmp.setNumNodo(parser.contador++);
@@ -401,6 +419,7 @@ M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
         Nodo C = new Nodo("Comma"); 
         C.setNumNodo(parser.contador++);
         C.setValor(","); 
+        C.setLocation((int) cright + 1); 
         tmp.addHijo((Nodo) C);
 
         tmp.addHijo((Nodo) md);
@@ -410,26 +429,28 @@ M_DECL ::= TYPE:t Id:i RightParent BLOCK:b
 ; 
 
 // HAY QUE HACER RECURSIVO VAR_DECL Y STATEMENT
-BLOCK ::= KeyOpenClose
+BLOCK ::= KeyOpenClose:kop
 {:
         Nodo tmp = new Nodo("BLOCK");
         tmp.setNumNodo(parser.contador++);
 
         Nodo KOP = new Nodo("KeyOpenClose"); 
         KOP.setNumNodo(parser.contador++);
-        KOP.setValor("{}"); 
+        KOP.setValor("{}");
+        KOP.setLocation((int) kopright + 1); 
         tmp.addHijo((Nodo) KOP);
         
         RESULT=tmp;
 :}
-        | LeftKey BLOCK_VAR_DECL:bvd 
+        | LeftKey:lk BLOCK_VAR_DECL:bvd 
 {:
         Nodo tmp = new Nodo("BLOCK");
         tmp.setNumNodo(parser.contador++);
 
         Nodo LK = new Nodo("LeftKey"); 
         LK.setNumNodo(parser.contador++);
-        LK.setValor("{"); 
+        LK.setValor("{");
+        LK.setLocation((int) lkright + 1); 
         tmp.addHijo((Nodo) LK);
         
         tmp.addHijo((Nodo) bvd);
@@ -458,7 +479,7 @@ BLOCK_VAR_DECL ::= VAR_DECL:vd BLOCK_VAR_DECL:bvd
         
         RESULT=tmp;
 :}
-            | RightKey
+            | RightKey:rk
 {:
         Nodo tmp = new Nodo("BLOCK_VAR_DECL");
         tmp.setNumNodo(parser.contador++);
@@ -466,6 +487,7 @@ BLOCK_VAR_DECL ::= VAR_DECL:vd BLOCK_VAR_DECL:bvd
         Nodo RK = new Nodo("RightKey"); 
         RK.setNumNodo(parser.contador++);
         RK.setValor("}"); 
+        RK.setLocation((int) rkright + 1); 
         tmp.addHijo((Nodo) RK);
         
         RESULT=tmp;
@@ -482,7 +504,7 @@ BLOCK_STATEMENT ::= STATEMENT:s BLOCK_STATEMENT:bs
         
         RESULT=tmp;
 :}
-                | RightKey
+                | RightKey:rk
 {:
         Nodo tmp = new Nodo("BLOCK_STATEMENT");
         tmp.setNumNodo(parser.contador++);
@@ -490,6 +512,7 @@ BLOCK_STATEMENT ::= STATEMENT:s BLOCK_STATEMENT:bs
         Nodo RK = new Nodo("RightKey"); 
         RK.setNumNodo(parser.contador++);
         RK.setValor("}"); 
+        RK.setLocation((int) rkright + 1); 
         tmp.addHijo((Nodo) RK);
         
         RESULT=tmp;
@@ -508,7 +531,7 @@ VAR_DECL ::= TYPE:t VAR_ID:vi
 :}
 ; 
 
-VAR_ID ::= Id:i Comma VAR_ID:vi
+VAR_ID ::= Id:i Comma:c VAR_ID:vi
 {:
         Nodo tmp = new Nodo("VAR_ID");
         tmp.setNumNodo(parser.contador++);
@@ -525,13 +548,14 @@ VAR_ID ::= Id:i Comma VAR_ID:vi
         Nodo C = new Nodo("Comma"); 
         C.setNumNodo(parser.contador++);
         C.setValor(","); 
+        C.setLocation((int) cright + 1); 
         tmp.addHijo((Nodo) C);
 
         tmp.addHijo((Nodo) vi);
         
         RESULT=tmp;
 :}
-        | Id:i SemiColom
+        | Id:i SemiColom:sc
 {:
         Nodo tmp = new Nodo("VAR_ID");
         tmp.setNumNodo(parser.contador++);
@@ -547,40 +571,43 @@ VAR_ID ::= Id:i Comma VAR_ID:vi
 
         Nodo SC = new Nodo("SemiColom"); 
         SC.setNumNodo(parser.contador++);
-        SC.setValor(";"); 
+        SC.setValor(";");
+        SC.setLocation((int) scright + 1); 
         tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
 :}
 ;
 
-TYPE ::= Int
+TYPE ::= Int:i
 {:
         Nodo tmp = new Nodo("TYPE");
         tmp.setNumNodo(parser.contador++);
 
         Nodo INT = new Nodo("Int"); 
         INT.setNumNodo(parser.contador++);
-        INT.setValor("Int"); 
+        INT.setValor("Int");
+        INT.setLocation((int) iright + 1); 
         tmp.addHijo((Nodo) INT);
         
         RESULT=tmp;
 :}
-    | Boolean 
+    | Boolean:b 
 {:
         Nodo tmp = new Nodo("TYPE");
         tmp.setNumNodo(parser.contador++);
 
         Nodo BOO = new Nodo("Boolean"); 
         BOO.setNumNodo(parser.contador++);
-        BOO.setValor("Boolean"); 
+        BOO.setValor("Boolean");
+        BOO.setLocation((int) bright + 1); 
         tmp.addHijo((Nodo) BOO);
         
         RESULT=tmp;
 :}
 ; 
 
-STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
+STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom:sc
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
@@ -591,7 +618,8 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
 
         Nodo SC = new Nodo("SemiColom"); 
         SC.setNumNodo(parser.contador++);
-        SC.setValor(";"); 
+        SC.setValor(";");
+        SC.setLocation((int) scright + 1); 
         tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
@@ -610,19 +638,21 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         
         RESULT=tmp;
 :} 
-            | If LeftParent EXPR:e RightParent BLOCK:b ELSE_BLOCK:eb 
+            | If:ifc LeftParent:lp EXPR:e RightParent:rp BLOCK:b ELSE_BLOCK:eb 
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
 
         Nodo IF = new Nodo("If"); 
         IF.setNumNodo(parser.contador++);
-        IF.setValor("If"); 
+        IF.setValor("If");
+        IF.setLocation((int) ifcright + 1); 
         tmp.addHijo((Nodo) IF);
 
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
         LP.setValor("("); 
+        LP.setLocation((int) lpright + 1); 
         tmp.addHijo((Nodo) LP);
 
         tmp.addHijo((Nodo) e);
@@ -630,6 +660,7 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         Nodo RP = new Nodo("RightParent"); 
         RP.setNumNodo(parser.contador++);
         RP.setValor(")"); 
+        RP.setLocation((int) rpright + 1); 
         tmp.addHijo((Nodo) RP);
 
         tmp.addHijo((Nodo) b);
@@ -638,14 +669,15 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         
         RESULT=tmp;
 :} 
-            | For Id:i Asign EXPR:e1 Comma EXPR:e2 BLOCK:b
+            | For:f Id:i Asign:asi EXPR:e1 Comma:c EXPR:e2 BLOCK:b
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
 
         Nodo FOR = new Nodo("For"); 
         FOR.setNumNodo(parser.contador++);
-        FOR.setValor("For"); 
+        FOR.setValor("For");
+        FOR.setLocation((int) fright + 1); 
         tmp.addHijo((Nodo) FOR);
         
         Nodo ID = new Nodo("Id"); 
@@ -659,14 +691,16 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
 
         Nodo Asi = new Nodo("Asign"); 
         Asi.setNumNodo(parser.contador++);
-        Asi.setValor("="); 
+        Asi.setValor("=");
+        Asi.setLocation((int) asiright + 1); 
         tmp.addHijo((Nodo) Asi);
 
         tmp.addHijo((Nodo) e1);
 
         Nodo C = new Nodo("Comma"); 
         C.setNumNodo(parser.contador++);
-        C.setValor(","); 
+        C.setValor(",");
+        C.setLocation((int) cright + 1); 
         tmp.addHijo((Nodo) C);
 
         tmp.addHijo((Nodo) e2);
@@ -674,38 +708,41 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         
         RESULT=tmp;
 :} 
-            | Return RETURN_EXPR:re 
+            | Return:r RETURN_EXPR:re 
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
 
         Nodo R = new Nodo("Return"); 
         R.setNumNodo(parser.contador++);
-        R.setValor("return"); 
+        R.setValor("return");
+        R.setLocation((int) rright + 1); 
         tmp.addHijo((Nodo) R);
         
         tmp.addHijo((Nodo) re);
         
         RESULT=tmp;
 :} 
-            | Break SemiColom
+            | Break:b SemiColom:sc
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
 
         Nodo B = new Nodo("Break"); 
         B.setNumNodo(parser.contador++);
-        B.setValor("break"); 
+        B.setValor("break");
+        B.setLocation((int) bright + 1); 
         tmp.addHijo((Nodo) B);
         
         Nodo SC = new Nodo("SemiColom"); 
         SC.setNumNodo(parser.contador++);
-        SC.setValor(";"); 
+        SC.setValor(";");
+        SC.setLocation((int) scright + 1);
         tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
 :} 
-            | Continue SemiColom
+            | Continue:c SemiColom:sc
 {:
         Nodo tmp = new Nodo("STATEMENT");
         tmp.setNumNodo(parser.contador++);
@@ -713,11 +750,13 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
         Nodo C = new Nodo("Continue"); 
         C.setNumNodo(parser.contador++);
         C.setValor("continue"); 
+        C.setLocation((int) cright + 1);
         tmp.addHijo((Nodo) C);
         
         Nodo SC = new Nodo("SemiColom"); 
         SC.setNumNodo(parser.contador++);
         SC.setValor(";"); 
+        SC.setLocation((int) scright + 1);
         tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
@@ -732,14 +771,15 @@ STATEMENT ::= LOCATION:l ASSIGN_OP:ao EXPR:e SemiColom
 :} 
 ;
 
-ELSE_BLOCK ::= Else BLOCK:b
+ELSE_BLOCK ::= Else:e BLOCK:b
 {:
         Nodo tmp = new Nodo("ELSE_BLOCK");
         tmp.setNumNodo(parser.contador++);
 
         Nodo E = new Nodo("Else"); 
         E.setNumNodo(parser.contador++);
-        E.setValor("else"); 
+        E.setValor("else");
+        E.setLocation((int) eright + 1);
         tmp.addHijo((Nodo) E);
         tmp.addHijo((Nodo) b);
         
@@ -748,7 +788,7 @@ ELSE_BLOCK ::= Else BLOCK:b
             |
 ;
 
-RETURN_EXPR ::= EXPR:e SemiColom
+RETURN_EXPR ::= EXPR:e SemiColom:sc
 {:
         Nodo tmp = new Nodo("ELSE_BLOCK");
         tmp.setNumNodo(parser.contador++);
@@ -757,12 +797,13 @@ RETURN_EXPR ::= EXPR:e SemiColom
 
         Nodo SC = new Nodo("SemiColom"); 
         SC.setNumNodo(parser.contador++);
-        SC.setValor(";"); 
+        SC.setValor(";");
+        SC.setLocation((int) scright + 1);
         tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
 :} 
-            | SemiColom
+            | SemiColom:sc
 {:
         Nodo tmp = new Nodo("ELSE_BLOCK");
         tmp.setNumNodo(parser.contador++);
@@ -770,6 +811,7 @@ RETURN_EXPR ::= EXPR:e SemiColom
         Nodo SC = new Nodo("SemiColom"); 
         SC.setNumNodo(parser.contador++);
         SC.setValor(";"); 
+        SC.setLocation((int) scright + 1);
         tmp.addHijo((Nodo) SC);
         
         RESULT=tmp;
@@ -777,19 +819,20 @@ RETURN_EXPR ::= EXPR:e SemiColom
 ; 
 
 
-ASSIGN_OP ::= Asign
+ASSIGN_OP ::= Asign:asi
 {:
         Nodo tmp = new Nodo("ASSIGN_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo Asi = new Nodo("Asign"); 
         Asi.setNumNodo(parser.contador++);
-        Asi.setValor("="); 
+        Asi.setValor("=");
+        Asi.setLocation((int) asiright + 1);
         tmp.addHijo((Nodo) Asi);
         
         RESULT=tmp;
 :} 
-            | AsignAdd
+            | AsignAdd:asi
 {:
         Nodo tmp = new Nodo("ASSIGN_OP");
         tmp.setNumNodo(parser.contador++);
@@ -797,11 +840,12 @@ ASSIGN_OP ::= Asign
         Nodo Asi = new Nodo("AsignAdd"); 
         Asi.setNumNodo(parser.contador++);
         Asi.setValor("+="); 
+        Asi.setLocation((int) asiright + 1);
         tmp.addHijo((Nodo) Asi);
         
         RESULT=tmp;
 :} 
-            | AsignSubs
+            | AsignSubs:asi
 {:
         Nodo tmp = new Nodo("ASSIGN_OP");
         tmp.setNumNodo(parser.contador++);
@@ -809,13 +853,14 @@ ASSIGN_OP ::= Asign
         Nodo Asi = new Nodo("AsignSubs"); 
         Asi.setNumNodo(parser.contador++);
         Asi.setValor("-="); 
+        Asi.setLocation((int) asiright + 1);
         tmp.addHijo((Nodo) Asi);
         
         RESULT=tmp;
 :} 
 ; 
 
-METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
+METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose:poc
 {:
         Nodo tmp = new Nodo("METHOD_CALL");
         tmp.setNumNodo(parser.contador++);
@@ -825,11 +870,12 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
         Nodo POC = new Nodo("ParentOpenClose"); 
         POC.setNumNodo(parser.contador++);
         POC.setValor("()"); 
+        POC.setLocation((int) pocright + 1);
         tmp.addHijo((Nodo) POC);
         
         RESULT=tmp;
 :} 
-            | METHOD_NAME:mn LeftParent METHOD_CALL_EXPR:mce
+            | METHOD_NAME:mn LeftParent:lp METHOD_CALL_EXPR:mce
 {:
         Nodo tmp = new Nodo("METHOD_CALL");
         tmp.setNumNodo(parser.contador++);
@@ -839,13 +885,14 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
         LP.setValor("("); 
+        LP.setLocation((int) lpright + 1);
         tmp.addHijo((Nodo) LP);
         
         tmp.addHijo((Nodo) mce);
         
         RESULT=tmp;
 :} 
-            | Callout LeftParent StringLiteral:sl RightParent
+            | Callout:c LeftParent:lp StringLiteral:sl RightParent:rp
 {:
         Nodo tmp = new Nodo("METHOD_CALL");
         tmp.setNumNodo(parser.contador++);
@@ -853,11 +900,13 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
         Nodo C = new Nodo("Callout"); 
         C.setNumNodo(parser.contador++);
         C.setValor("callout"); 
+        C.setLocation((int) cright + 1);
         tmp.addHijo((Nodo) C);
 
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
         LP.setValor("("); 
+        LP.setLocation((int) lpright + 1);
         tmp.addHijo((Nodo) LP);
 
         Nodo ST = new Nodo("StringLiteral"); 
@@ -868,28 +917,32 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
         Nodo RP = new Nodo("RightParent"); 
         RP.setNumNodo(parser.contador++);
         RP.setValor(")"); 
+        RP.setLocation((int) rpright + 1);
         tmp.addHijo((Nodo) RP);
         
         RESULT=tmp;
 :} 
-            | Callout LeftParent StringLiteral:sl METHOD_CALL_CALLOUT:mcc
+            | Callout:c LeftParent:lp StringLiteral:sl METHOD_CALL_CALLOUT:mcc
 {:
         Nodo tmp = new Nodo("METHOD_CALL");
         tmp.setNumNodo(parser.contador++);
 
         Nodo C = new Nodo("Callout"); 
         C.setNumNodo(parser.contador++);
-        C.setValor("callout"); 
+        C.setValor("callout");
+        C.setLocation((int) cright + 1);
         tmp.addHijo((Nodo) C);
 
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
-        LP.setValor("("); 
+        LP.setValor("(");
+        LP.setLocation((int) lpright + 1);
         tmp.addHijo((Nodo) LP);
 
         Nodo ST = new Nodo("StringLiteral"); 
         ST.setNumNodo(parser.contador++);
-        ST.setValor(sl.toString()); 
+        ST.setValor(sl.toString());
+        ST.setLocation((int) slright + 1);
         tmp.addHijo((Nodo) ST);
 
         tmp.addHijo((Nodo) mcc);
@@ -898,7 +951,7 @@ METHOD_CALL ::= METHOD_NAME:mn ParentOpenClose
 :} 
 ; 
 
-METHOD_CALL_EXPR ::= EXPR:e Comma METHOD_CALL_EXPR:mce 
+METHOD_CALL_EXPR ::= EXPR:e Comma:c METHOD_CALL_EXPR:mce 
 {:
         Nodo tmp = new Nodo("METHOD_CALL_EXPR");
         tmp.setNumNodo(parser.contador++);
@@ -907,14 +960,15 @@ METHOD_CALL_EXPR ::= EXPR:e Comma METHOD_CALL_EXPR:mce
 
         Nodo C = new Nodo("Comma"); 
         C.setNumNodo(parser.contador++);
-        C.setValor(","); 
+        C.setValor(",");
+        C.setLocation((int) cright + 1);
         tmp.addHijo((Nodo) C);
 
         tmp.addHijo((Nodo) mce);
 
         RESULT=tmp;
 :} 
-                | EXPR:e RightParent
+                | EXPR:e RightParent:rp
 {:
         Nodo tmp = new Nodo("METHOD_CALL_EXPR");
         tmp.setNumNodo(parser.contador++);
@@ -924,6 +978,7 @@ METHOD_CALL_EXPR ::= EXPR:e Comma METHOD_CALL_EXPR:mce
         Nodo RP = new Nodo("RightParent"); 
         RP.setNumNodo(parser.contador++);
         RP.setValor(")"); 
+        RP.setLocation((int) rpright + 1);
         tmp.addHijo((Nodo) RP);
 
         RESULT=tmp;
@@ -946,7 +1001,7 @@ METHOD_CALL_CALLOUT ::= CALLOUT_ARG:ca Comma METHOD_CALL_CALLOUT:mcc
 
         RESULT=tmp;
 :} 
-                    | CALLOUT_ARG:ca RightParent
+                    | CALLOUT_ARG:ca RightParent:rp
 {:
         Nodo tmp = new Nodo("METHOD_CALL_CALLOUT");
         tmp.setNumNodo(parser.contador++);
@@ -956,6 +1011,7 @@ METHOD_CALL_CALLOUT ::= CALLOUT_ARG:ca Comma METHOD_CALL_CALLOUT:mcc
         Nodo RP = new Nodo("RightParent"); 
         RP.setNumNodo(parser.contador++);
         RP.setValor(")"); 
+        RP.setLocation((int) rpright + 1);
         tmp.addHijo((Nodo) RP);
 
         RESULT=tmp;
@@ -1000,7 +1056,7 @@ LOCATION ::= Id:i LOCATION_EXPR:le
 :} 
 ; 
 
-LOCATION_EXPR ::= LeftBracket EXPR:e RightBracket
+LOCATION_EXPR ::= LeftBracket:lb EXPR:e RightBracket:rb
 {:
         Nodo tmp = new Nodo("LOCATION");
         tmp.setNumNodo(parser.contador++);
@@ -1008,13 +1064,15 @@ LOCATION_EXPR ::= LeftBracket EXPR:e RightBracket
         Nodo LB = new Nodo("LeftBracket"); 
         LB.setNumNodo(parser.contador++);
         LB.setValor("["); 
-        tmp.addHijo((Nodo) LB);
+        LB.setLocation((int) lbright + 1);
+        LB.addHijo((Nodo) LB);
 
         tmp.addHijo((Nodo) e);
 
         Nodo RB = new Nodo("RightBracket"); 
         RB.setNumNodo(parser.contador++);
         RB.setValor("]"); 
+        RB.setLocation((int) rbright + 1);
         tmp.addHijo((Nodo) RB);
 
         RESULT=tmp;
@@ -1060,7 +1118,7 @@ EXPR ::= LOCATION:lo
 
         RESULT=tmp;
 :}
-        | Substract EXPR:e
+        | Substract:s EXPR:e
 {:
         Nodo tmp = new Nodo("EXPR");
         tmp.setNumNodo(parser.contador++);
@@ -1068,27 +1126,29 @@ EXPR ::= LOCATION:lo
         Nodo S = new Nodo("Substract"); 
         S.setNumNodo(parser.contador++);
         S.setValor("-"); 
+        S.setLocation((int) sright + 1);
         tmp.addHijo((Nodo) S);
         
         tmp.addHijo((Nodo) e);
 
         RESULT=tmp;
 :}
-        | Exclam EXPR:e
+        | Exclam:ex EXPR:e
 {:
         Nodo tmp = new Nodo("EXPR");
         tmp.setNumNodo(parser.contador++);
         
         Nodo E = new Nodo("Exclam"); 
         E.setNumNodo(parser.contador++);
-        E.setValor("!"); 
+        E.setValor("!");
+        E.setLocation((int) exright + 1);
         tmp.addHijo((Nodo) E);
         
         tmp.addHijo((Nodo) e);
 
         RESULT=tmp;
 :}
-        | LeftParent EXPR:e RightParent
+        | LeftParent:lp EXPR:e RightParent:rp
 {:
         Nodo tmp = new Nodo("EXPR");
         tmp.setNumNodo(parser.contador++);
@@ -1096,6 +1156,7 @@ EXPR ::= LOCATION:lo
         Nodo LP = new Nodo("LeftParent"); 
         LP.setNumNodo(parser.contador++);
         LP.setValor("("); 
+        LP.setLocation((int) lpright + 1);
         tmp.addHijo((Nodo) LP);
         
         tmp.addHijo((Nodo) e);
@@ -1103,6 +1164,7 @@ EXPR ::= LOCATION:lo
         Nodo RP = new Nodo("RightParent"); 
         RP.setNumNodo(parser.contador++);
         RP.setValor(")"); 
+        LP.setLocation((int) rpright + 1);
         tmp.addHijo((Nodo) RP);
 
         RESULT=tmp;
@@ -1125,7 +1187,12 @@ CALLOUT_ARG ::= EXPR:e
 
         Nodo SL = new Nodo("StringLiteral"); 
         SL.setNumNodo(parser.contador++);
-        SL.setValor(sl.toString()); 
+        SL.setValor(sl.toString());
+        SL.setLocation((int) slright + 1);
+
+        tmp.setLocation((int) slright + 1);
+
+
         tmp.addHijo((Nodo) SL);
 
         RESULT=tmp;
@@ -1163,138 +1230,167 @@ BIN_OP ::= ARITH_OP:ao
 {:
         Nodo tmp = new Nodo("BIN_OP");
         tmp.setNumNodo(parser.contador++);
-
         tmp.addHijo((Nodo) co);
 
         RESULT=tmp;
 :}
 ; 
 
-ARITH_OP ::= Add 
+ARITH_OP ::= Add:a
 {:
         Nodo tmp = new Nodo("ARITH_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("Add"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("+"); 
+        O.setValor("+");
+        O.setLocation((int) aright + 1);
+
+        tmp.setLocation((int) aright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | Substract
+        | Substract:s
 {:
         Nodo tmp = new Nodo("ARITH_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("Substract"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("-"); 
+        O.setValor("-");
+        O.setLocation((int) sright + 1);
+
+        tmp.setLocation((int) sright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | Multiplication
+        | Multiplication:m
 {:
         Nodo tmp = new Nodo("ARITH_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("Multiplication"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("*"); 
+        O.setValor("*");
+        O.setLocation((int) mright + 1);
+
+        tmp.setLocation((int) mright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | Division
+        | Division:d
 {:
         Nodo tmp = new Nodo("ARITH_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("Division"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("/"); 
+        O.setValor("/");
+        O.setLocation((int) dright + 1);
+
+        tmp.setLocation((int) dright + 1); 
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | Mod
+        | Mod:m
 {:
         Nodo tmp = new Nodo("ARITH_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("Mod"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("%"); 
+        O.setValor("%");
+        O.setLocation((int) mright + 1);
+
+        tmp.setLocation((int) mright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
 ; 
 
-REL_OP ::= LessThan 
+REL_OP ::= LessThan:lt
 {:
         Nodo tmp = new Nodo("REL_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("LessThan"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("<"); 
+        O.setValor("<");
+        O.setLocation((int) ltright + 1);
+
+        tmp.setLocation((int) ltright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | GreaterThan
+        | GreaterThan:gt
 {:
         Nodo tmp = new Nodo("REL_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("GreaterThan"); 
         O.setNumNodo(parser.contador++);
-        O.setValor(">"); 
+        O.setValor(">");
+        O.setLocation((int) gtright + 1);
+
+        tmp.setLocation((int) gtright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | LessEqualThan
+        | LessEqualThan:let
 {:
         Nodo tmp = new Nodo("REL_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("LessEqualThan"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("<="); 
+        O.setValor("<=");
+        O.setLocation((int) letright + 1);
+
+        tmp.setLocation((int) letright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | GreaterEqualThan
+        | GreaterEqualThan:get
 {:
         Nodo tmp = new Nodo("REL_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("GreaterEqualThan"); 
         O.setNumNodo(parser.contador++);
-        O.setValor(">="); 
+        O.setValor(">=");
+        O.setLocation((int) getright + 1);
+
+        tmp.setLocation((int) getright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
 ;
 
-EQ_OP ::= Equal
+EQ_OP ::= Equal:e
 {:
         Nodo tmp = new Nodo("EQ_OP");
         tmp.setNumNodo(parser.contador++);
 
         Nodo O = new Nodo("Equal"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("=="); 
+        O.setValor("==");
+        O.setLocation((int) eright + 1);
+
+        tmp.setLocation((int) eright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | NotEqual
+        | NotEqual:ne
 {:
         Nodo tmp = new Nodo("EQ_OP");
         tmp.setNumNodo(parser.contador++);
@@ -1302,13 +1398,16 @@ EQ_OP ::= Equal
         Nodo O = new Nodo("NotEqual"); 
         O.setNumNodo(parser.contador++);
         O.setValor("!="); 
+        O.setLocation((int) neright + 1);
+
+        tmp.setLocation((int) neright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
 ;
 
-COND_OP ::= And
+COND_OP ::= And:an
 {:
         Nodo tmp = new Nodo("COND_OP");
         tmp.setNumNodo(parser.contador++);
@@ -1316,18 +1415,24 @@ COND_OP ::= And
         Nodo O = new Nodo("And"); 
         O.setNumNodo(parser.contador++);
         O.setValor("&&"); 
+        O.setLocation((int) anright + 1);
+
+        tmp.setLocation((int) anright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
 :}
-        | Or
+        | Or:or
 {:
         Nodo tmp = new Nodo("COND_OP");
         tmp.setNumNodo(parser.contador++);
         
         Nodo O = new Nodo("Or"); 
         O.setNumNodo(parser.contador++);
-        O.setValor("||"); 
+        O.setValor("||");
+        O.setLocation((int) orright + 1);
+
+        tmp.setLocation((int) orright + 1);
         tmp.addHijo((Nodo) O);
 
         RESULT=tmp;
@@ -1338,6 +1443,7 @@ LITERAL ::= INT_LITERAL:il
 {:
         Nodo tmp = new Nodo("LITERAL");
         tmp.setNumNodo(parser.contador++);
+        tmp.setLocation((int) ilright + 1);
         
         tmp.addHijo((Nodo) il);
 
@@ -1347,6 +1453,7 @@ LITERAL ::= INT_LITERAL:il
 {:
         Nodo tmp = new Nodo("LITERAL");
         tmp.setNumNodo(parser.contador++);
+        tmp.setLocation((int) blright + 1);
         
         tmp.addHijo((Nodo) bl);
 
@@ -1357,6 +1464,7 @@ LITERAL ::= INT_LITERAL:il
         Nodo tmp = new Nodo("CharLiteral");
         tmp.setNumNodo(parser.contador++);
         tmp.setValor(cl.toString()); 
+        tmp.setLocation((int) clright + 1);
 
         RESULT=tmp;
 :}
@@ -1366,6 +1474,7 @@ INT_LITERAL ::= DecimalLiteral:d
 {:
         Nodo tmp = new Nodo("INT_LITERAL");
         tmp.setNumNodo(parser.contador++);
+        tmp.setLocation((int) dright + 1); 
         
         Nodo DL = new Nodo("DecimalLiteral"); 
         DL.setNumNodo(parser.contador++);
@@ -1379,6 +1488,7 @@ INT_LITERAL ::= DecimalLiteral:d
 {:
         Nodo tmp = new Nodo("INT_LITERAL");
         tmp.setNumNodo(parser.contador++);
+        tmp.setLocation((int) hright + 1); 
         
         Nodo HL = new Nodo("HexLiteral"); 
         HL.setNumNodo(parser.contador++);
@@ -1394,6 +1504,7 @@ BOOL_LITERAL ::= True:tt
 {:
         Nodo tmp = new Nodo("BOOL_LITERAL");
         tmp.setNumNodo(parser.contador++);
+        tmp.setLocation((int) ttright + 1); 
         
         Nodo T = new Nodo("True"); 
         T.setNumNodo(parser.contador++);
@@ -1407,6 +1518,7 @@ BOOL_LITERAL ::= True:tt
 {:
         Nodo tmp = new Nodo("BOOL_LITERAL");
         tmp.setNumNodo(parser.contador++);
+        tmp.setLocation((int) ffright + 1);
         
         Nodo F = new Nodo("False"); 
         F.setNumNodo(parser.contador++);

@@ -1,18 +1,65 @@
 class Program {
     int a; 
     int b [3];
+    int jajamon [4]; 
+
 
     int pejelagarto(int a, int b){ // method declaration
+    
+       return jajamon[1];  
     }
+
+
+
+
 
     int pejalagorta(int a, boolean t){
+        int i; 
+        boolean b;
+        boolean j;
+        boolean resultado;
+
+        b = true; 
+        j = false;
+        i = 1; 
+
+        resultado = b == j; 
+
         a = 1;
-        a = 3 + t; 
+        a = 3; 
+
+        resultado = a == a && false; 
         
+        a = 3 + a + 6; 
+        a = jajamon[2]; 
+
+
+        resultado = !a==a;
+
+        if (a >= a){
+            // lo que sea
+        }
+
+        for i = 0 , i < 3 && i > 0 {
+
+        }
+        
+        return i; 
     }
 
-    int ojala(int a, boolean t){
-        //
+    boolean ojala(int a, boolean t){
+        boolean daniel; 
+        daniel = true; 
+        return daniel; 
+    }
+
+    void main(){
+        int i; 
+        int a;
+        boolean bandera;
+        
+        i = !2; 
+        a = a + 2 + i; 
     }
 }
 
@@ -27,3 +74,5 @@ class Program {
 // 2     b      int     3 
 // 4     c      boolean 3 
 
+// peek = Boolean y el tipo Int  OK
+// peek = Int y el tipo Boolean  ERROR 

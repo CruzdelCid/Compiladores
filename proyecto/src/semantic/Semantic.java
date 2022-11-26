@@ -2,7 +2,6 @@ package semantic;
 
 import parser.Nodo;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -37,6 +36,8 @@ public class Semantic {
     public Stack<String> operacionStack; 
     public Stack<String> typeStack;
     public String tipo_var; 
+    public String last_tipo; 
+    public Boolean returnValid = false;
 
 
 
@@ -47,44 +48,61 @@ public class Semantic {
 
     public void run(){
 
-        System.out.println("ANÁLISIS DE UNICIDAD");
+        System.out.println("---> ANÁLISIS DE UNICIDAD");
         this.createSimbolTable(false); //Ejercutamos el recorrido
         this.printErrores();
 
         if (this.erroresUnicidad){
-            System.out.println("\nERROR: El programa no cumple con unidad.\n");
+            System.out.println("\n\nERRROR : El programa no cumple con unicidad.\n");
             System.out.println("\nstopping: semantic analysis\n");
             System.exit(1);
         }
         else {
-            System.out.println("\nSUCCESS: Análsis de unicicidad hecho correctamente.\n");
+            System.out.println("\nSUCCESS: Análsis de unicidad hecho correctamente.\n");
         }
 
 
         // analisis de tipos 
 
-        System.out.println("ANÁLISIS DE TIPOS");
+        System.out.println("---> ANÁLISIS DE TIPOS");
         this.analisisTipos();
         System.out.println("\nSUCCESS: Análsis de tipos realizado correctamente.\n");
     }
 
 
     public void debug(){
-        System.out.println("ANÁLISIS DE UNICIDAD");
+        System.out.println("---> ANÁLISIS DE UNICIDAD");
         this.createSimbolTable(true); //Ejercutamos el recorrido
         this.printErrores();
 
         if (this.erroresUnicidad){
-            System.out.println("\nERROR: El programa no cumple con unidad.\n");
+            System.out.println("\n\nERRROR : El programa no cumple con unicidad.\n");
             System.out.println("\nstopping: semantic analysis\n");
             System.exit(1);
         }
         else {
-            System.out.println("\nSUCCESS: Análsis de unicicidad hecho correctamente.\n");
+            System.out.println("\nSUCCESS: Análsis de unicidad hecho correctamente.\n");
         }
 
         // analisis de tipos
-        System.out.println("ANÁLISIS DE TIPOS");
+        System.out.println("---> ANÁLISIS DE TIPOS");
+        this.analisisTipos();
+        System.out.println("\nSUCCESS: Análsis de tipos realizado correctamente.\n");
+    }
+
+    public void printStacks(){
+        if (this.debu){
+            System.out.println("Stack operaciones: " + this.operacionStack);
+            System.out.println("Stack type: " + this.typeStack);
+        }
+        
+    }
+
+    public void printElim(String a, String b){
+        if (this.debu){
+            System.out.println("Se elimino la operacion: " + a);
+            System.out.println("Se elimino el tipo: " + b + "\n");
+        }
     }
     
 
@@ -93,9 +111,6 @@ public class Semantic {
     
     //METODOS//
 
-    /*
-     * createSimbolTable manda el nodo padre al metodo recorrer
-     */
     public void analisisTipos(){
         //seteo inicial de variables 
         this.bloques = new Stack<Integer>(); 
@@ -147,7 +162,8 @@ public class Semantic {
     private int scanerNodos1(Nodo raiz){
 
         String nombre = raiz.getNombre();
-        int location1 = raiz.getLocation(); 
+        int location1 = raiz.getLocation();
+        // System.out.println("Location: " + location1 + " " + nombre);
 
         // VERIFICACION DE FIELD DECLARATION 
         if(nombre.equals("FIELD_DECL")){
@@ -200,16 +216,20 @@ public class Semantic {
             this.idScope += 1; 
             this.bloques.add(idScope); 
             this.declaracion = false;
+
+            // llamada de errores
+            if(this.typeStack.size() > 0){
+                String erro = this.operacionStack.peek(); 
+                this.errorElim(erro, location1); 
+            }
         }
         else if(nombre.equals("SemiColom")){
             this.declaracion = false;
             this.field_dcl = false; 
 
-
-            // debemos añadir los errores
+            // llamada de errores
             if(this.typeStack.size() > 0){
-                System.out.println("Existen errores de tipos");
-                System.exit(1);
+                this.errorElim("int_value", location1); 
             }
         }
 
@@ -254,7 +274,43 @@ public class Semantic {
             }
         }
         
+        // Eliminacion de un Scope 
+        else if(nombre.equals("RightKey")){
+            
+            int scope = this.bloques.peek(); 
+            this.declaracion = false;
 
+            if (scope == 1 && this.tabla.isMain() == false){
+                System.out.println("\n\nERRROR : NO SE DECLARO LA FUNCION main()");
+                System.out.println("Linea: " + location1);
+                System.exit(1); 
+            }            
+            this.tabla.popScope(scope);
+            this.bloques.pop();
+
+            if (this.bloques.size() > 0){
+                if(this.bloques.peek() == 1){
+                    if(this.tabla.isMain() == false){
+                        if (this.tabla.isTypeLastFunction().equals("void")){
+                            // pasamos sin verificar el return
+                            this.returnValid = false;
+                        }
+                        else if(this.returnValid == true){
+                            // Todo bien, sí tiene un return 
+                            this.returnValid = false;
+                        }
+                        else {
+                            System.out.println("\n\nERRROR : el metodo <<" + this.tabla.lastFunction() + 
+                                                ">> no tiene ningún return, debe tener un return \n" + 
+                                                " con un valor de tipo <<" + this.tabla.isTypeLastFunction() + ">>");
+                            System.out.println("Linea: " + location1);
+                            System.exit(1); 
+                        }
+                    }
+                }
+            }
+
+        }
 
 
         //-----------------------------------------------------------------------------------------------------------------------        
@@ -267,33 +323,26 @@ public class Semantic {
             // obtenemos su tipo de la tabla de signos 
             String type = this.tabla.getTypeSimbol(identifier); 
             Integer funcion = this.tabla.isFunction(identifier);
-            
+            Integer tamano = this.tabla.isVector(identifier); 
+
             this.tipo_var = type; 
 
             
             // Eliminación en el stack
 
-            System.out.println(raiz.getNombre());
-            System.out.println(raiz.getIdentifier());
-            System.out.println(raiz.getLocation());
-            System.out.println(raiz.getNumNodo());
-            System.out.println(raiz.getValor());
             this.eliminacionStack(this.tipo_var, location1);
             
-
-
-
             // Añadicion de la funcion en el stack
             if (funcion == 1){
                 this.tablaParams.ponerParams(operacionStack, typeStack, id);
-                System.out.println("Se añadieron más tipos a la tabla");
+                // System.out.println("Se añadieron más tipos a los stckas de tipo y operacion");
+            }
+
+            if (tamano > 0){
+                this.operacionStack.add("Vector"); 
+                this.typeStack.add(tamano.toString()); 
             }
         }
-
-
-
-
-
 
 
         // operaciones de asignación
@@ -306,8 +355,8 @@ public class Semantic {
                 this.operacionStack.add("AsignAdd"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La asginacion += no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La asignacion += no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
         }
@@ -316,21 +365,21 @@ public class Semantic {
                 this.operacionStack.add("AsignSubs"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La asginacion -= no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La asignacion -= no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
         }
 
 
-        // operecion es arimeticas
+        // operecion es aritmeticas
         else if(nombre.equals("Add")){
             if(this.tipo_var.equals("Int")){
                 this.operacionStack.add("Add"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La suma no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La suma no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
 
@@ -340,8 +389,8 @@ public class Semantic {
                 this.operacionStack.add("Substract"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La resta no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La resta no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
 
@@ -351,8 +400,8 @@ public class Semantic {
                 this.operacionStack.add("Multiplication"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La multiplicacion no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La multiplicacion no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
         }
@@ -361,8 +410,8 @@ public class Semantic {
                 this.operacionStack.add("Division"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La división no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La división no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
 
@@ -372,34 +421,49 @@ public class Semantic {
                 this.operacionStack.add("Mod"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La operacion mod no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La operacion mod no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
         }
 
         // operaciones con numeros
         else if(this.field_dcl == false && nombre.equals("INT_LITERAL")){  
+            //System.out.println("INT_LITERAL FOUND");
+            this.tipo_var = "Int";
             
-            System.out.println(raiz.getNombre());
-            System.out.println(raiz.getIdentifier());
-            System.out.println(raiz.getLocation());
-            System.out.println(raiz.getNumNodo());
-            System.out.println(raiz.getValor());
-            this.eliminacionStack("Int", location1);
+            if (this.operacionStack.peek().equals("For")){
+                System.out.println("\n\nERRROR : La primera expresion del for no puede ser un Int_literal, debe ser una variable de tipo int.");
+                System.out.println("Linea: " + location1);
+                System.exit(1); 
+            }
+            if (this.operacionStack.peek().equals("Vector")){
+                // dejamos pasar el int_literal
+            }
+            else{
+                this.eliminacionStack("Int", location1);
+            }
         }
         else if(this.field_dcl == false && nombre.equals("BOOL_LITERAL")){
-            //this.eliminacionStack("boolean", location1);
+            //System.out.println("BOOL_LITERAL FOUND");
+            this.tipo_var = "Boolean";
+
+            if (this.operacionStack.peek().equals("For_cond")){
+                System.out.println("\n\nERRROR : La segunda expresion del for no puede ser un Bool_literal, debe ser una variable de tipo boolean.");
+                System.out.println("Linea: " + location1);
+                System.exit(1); 
+            }
+            this.eliminacionStack("Boolean", location1);
         }
 
-        //operaciones condicionales 
+        // operaciones condicionales 
         else if(nombre.equals("LessThan")){
             if(this.tipo_var.equals("Int")){
                 this.operacionStack.add("LessThan"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La comparacion LessThan no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La comparacion LessThan no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
         }
@@ -408,8 +472,8 @@ public class Semantic {
                 this.operacionStack.add("GreaterThan"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La comparacion GreaterThan no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La comparacion GreaterThan no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
 
@@ -419,8 +483,8 @@ public class Semantic {
                 this.operacionStack.add("LessEqualThan"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La comparacion LessEqualThan no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La comparacion LessEqualThan no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
 
@@ -430,92 +494,372 @@ public class Semantic {
                 this.operacionStack.add("GreaterEqualThan"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La comparacion GreaterEqualThan no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La comparacion GreaterEqualThan no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
-
         }
         else if(nombre.equals("Equal")){
-            if(this.tipo_var.equals("Int")){
-                this.operacionStack.add("GreaterEqualThan"); 
-                this.typeStack.add(this.tipo_var);
-            } else {
-                System.out.println("ERROR: La comparacion GreaterEqualThan no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
-                System.exit(1); 
-            }
-
+            this.operacionStack.add("Equal"); 
+            this.typeStack.add(this.tipo_var);
         }
         else if(nombre.equals("NotEqual")){
-            if(this.tipo_var.equals("Int")){
-                this.operacionStack.add("NotEqual"); 
-                this.typeStack.add(this.tipo_var);
-            } else {
-                System.out.println("ERROR: La comparacion NotEqual no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
-                System.exit(1); 
-            }
+            this.operacionStack.add("NotEqual"); 
+            this.typeStack.add(this.tipo_var);
         }
         
         // casos especiales 
         else if(nombre.equals("And")){
-            if(this.tipo_var.equals("Int")){
+            if(this.tipo_var.equals("Boolean")){
                 this.operacionStack.add("And"); 
                 this.typeStack.add(this.tipo_var);
             } else {
-                System.out.println("ERROR: La comparacion And no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La condicional And no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
             }
         }
         else if(nombre.equals("Or")){
-            if(this.tipo_var.equals("Int")){
+            if(this.tipo_var.equals("Boolean")){
                 this.operacionStack.add("Or"); 
-                this.typeStack.add(this.tipo_var);
+                this.typeStack.add(this.tipo_var); 
             } else {
-                System.out.println("ERROR: La comparacion Or no es posible en variables de tipo "+ this.tipo_var);
-                System.out.println("Linea:" + location1);
+                System.out.println("\n\nERRROR : La condicional Or no es posible en variables de tipo "+ this.tipo_var);
+                System.out.println("Linea: " + location1);
                 System.exit(1); 
+            }
+        }
+        else if(nombre.equals("If")){
+            this.operacionStack.add("If"); 
+            this.typeStack.add("Boolean"); 
+            this.tipo_var = "Boolean"; 
+        }
+        else if(nombre.equals("For")){
+            this.operacionStack.add("For"); 
+            this.typeStack.add("Int"); 
+            this.tipo_var = "Int"; 
+        }
+        else if(nombre.equals("Exclam")){
+            if(this.tipo_var.equals("Boolean")){
+                // seguimos normal  
+            } else {
+                System.out.println("\n\nERRROR : La condicional negada no es posible en variables de tipo " + this.tipo_var);
+                System.out.println("Linea: " + location1);
+                System.exit(1); 
+            }
+        }
+        // verificaion de los return 
+        else if(nombre.equals("Return")){
+            String return_type = this.tabla.isTypeLastFunction(); 
+
+            if(return_type.equals("NO FUNCTION")){
+                System.out.println("\n\nERRROR : No es posibble declarar un return sin declarar un metodo antes.");
+                System.out.println("Linea: " + location1);
+                System.exit(1); 
+            }
+            
+            if (return_type.equals("void")){
+                System.out.println("\n\nERRROR: Los metodos de tipo void no pueden llevar return.");
+                System.out.println("Linea: " + location1);
+                System.exit(1); 
+            }
+            else{
+                this.operacionStack.add("Return"); 
+                this.typeStack.add(return_type); 
+                this.tipo_var = return_type;
+                this.returnValid = true; 
             }
         }
 
 
+        // verificacion de un vector
+        else if(this.typeStack.size() > 0){
+            if(this.operacionStack.peek().equals("Vector")){
+                if(nombre.equals("DecimalLiteral")){
+                    int tamano = Integer.parseInt(this.typeStack.peek()); 
+                    int valor = Integer.parseInt(raiz.getValor()); 
 
+                    if (tamano > valor){
+                        String a = this.operacionStack.pop();
+                        String b = this.typeStack.pop(); 
+                        this.tipo_var = "Int"; 
 
+                        this.printElim(a,b);
+                    }
+                    else{
+                        System.out.println("\n\nERRROR : Index Outbonding. El indice debe ser menor que el tamaño del vector.");
+                        System.out.println("Linea: " + location1);
+                        System.exit(1);
+                    }
+
+                }
+                else if (nombre.equals("HexLiteral")){
+                    int tamano = Integer.parseInt(this.typeStack.peek()); 
+                    int valor = Integer.parseInt(raiz.getValor(), 16); 
+
+                    if (tamano > valor){
+                        String a = this.operacionStack.pop();
+                        String b = this.typeStack.pop(); 
+                        this.tipo_var = "Int"; 
+
+                        this.printElim(a,b);
+                    }
+                    else{
+                        System.out.println("\n\nERRROR : Index Outbonding. El indice debe ser menor que el tamaño del vector.");
+                        System.out.println("Linea: " + location1);
+                        System.exit(1);
+                    }
+                }
+            }
+        }
 
         //-------------------------------------------------------------------------------------------------------------------------
 
-        // Eliminacion de un Scope 
-        else if(nombre.equals("RightKey")){
-            
-            int scope = this.bloques.peek(); 
-            this.declaracion = false;
-
-
-            this.tabla.popScope(scope);
-            this.bloques.pop();
-
-        }
         return 0; 
     }
 
-    public void eliminacionStack(String tipo, int location){
-        System.out.println(this.typeStack);
-        if (this.typeStack.size() > 0 && this.typeStack.peek() == this.tipo_var){
-            this.operacionStack.pop();
-            this.typeStack.pop();
 
-            System.out.println("Cumple!");
+    /*
+     * Elimina los elementos del stack 
+     */
+    public void eliminacionStack(String tipo, int location){
+        this.printStacks(); 
+
+        if (this.typeStack.size() > 0){
+            String operacion = this.operacionStack.peek(); 
+            String tipo_pico = this.typeStack.peek(); 
+            
+            if(tipo_pico.equals(tipo)){
+                //eliminacion en stacks
+                this.operacionStack.pop(); 
+                this.typeStack.pop(); 
+
+                this.printElim(operacion,tipo_pico);
+                
+                
+                if(operacion.equals("For")){
+                    this.operacionStack.add("For_cond");
+                    this.typeStack.add("Boolean");
+                }
+
+
+                else if (this.typeStack.size() > 0){
+                    if(operacion.equals("LessThan")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+                    }
+                    else if(operacion.equals("GreaterThan")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+                    }
+                    else if(operacion.equals("LessEqualThan")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop();
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b); 
+                        }
+    
+                    }
+                    else if(operacion.equals("GreaterEqualThan")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+    
+                    }
+                    else if(operacion.equals("Equal")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+    
+                    }
+                    else if(operacion.equals("NotEqual")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+    
+                    }
+                    else if(operacion.equals("And")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+    
+                    }
+                    else if(operacion.equals("Or")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+                    }
+                    else if(operacion.equals("Return")){
+                        if(this.typeStack.peek().equals("Boolean")){
+                            String a = this.operacionStack.pop();
+                            String b = this.typeStack.pop(); 
+                            this.tipo_var = "Boolean"; 
+
+                            this.printElim(a,b);
+                        }
+                    }
+                } 
+                else {
+                    //System.out.println("La operacion era de tipo: " + operacion);
+                }
+            } 
+            else {
+                // errores de eliminacion
+                this.errorElim(tipo, location);
+            }
+        } 
+        else {
+            //System.out.println("No se hace eliminacion");
         }
-        else if (this.typeStack.size() == 0){
-            // nada 
+    }
+
+    public void errorElim(String tipo, Integer location){
+        String operacion = this.operacionStack.peek(); 
+        String tipo_pico = this.typeStack.peek(); 
+
+        // el pico es Boolean y se le mandó un Int
+        if(tipo_pico.equals("Boolean") && tipo.equals("Int")){
+            //System.out.println("No se hizo eliminacion, tipo Boolean permitida.");
+        } 
+
+        // El pico es un Int y se le mandó un Boolean hay error
+        else if (tipo_pico.equals("Int") && tipo.equals("Boolean")) {
+            if (operacion.equals("Asign")){
+                System.out.println("\n\nERRROR : No le puede asignar valor tipo " + tipo + " a una variable tipo " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("AsignAdd")){
+                System.out.println("\n\nERRROR : No le puede asignar valores tipo " + tipo + " a una variable tipo " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("AsignSubs")){
+                System.out.println("\n\nERRROR : No le puede asignar valores tipo " + tipo + " a una variable tipo " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Add")){
+                System.out.println("\n\nERRROR : No puede sumar valores tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Substract")){
+                System.out.println("\n\nERRROR : No puede restar valores tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Multiplication")){
+                System.out.println("\n\nERRROR : No puede multiplicar valores tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Division")){
+                System.out.println("\n\nERRROR : No puede dividir valores tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Mod")){
+                System.out.println("\n\nERRROR : No puede calcular el Mod en valores tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("LessThan")){
+                System.out.println("\n\nERRROR : No puede hacer una comparación LessThan con variables tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("GreaterThan")){
+                System.out.println("\n\nERRROR : No puede hacer una comparación GreaterThan con variables tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("LessEqualThan")){
+                System.out.println("\n\nERRROR : No puede hacer una comparación LessEqualThan con variables tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("GreaterEqualThan")){
+                System.out.println("\n\nERRROR : No puede hacer una comparación GreaterEqualThan con variables tipo " + tipo);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Equal")){
+                System.out.println("\n\nERRROR : No puede comparar variables de distinto tipo " + tipo + " y " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("NotEqual")){
+                System.out.println("\n\nERRROR : No puede comparar variables de distinto tipo " + tipo + " y " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("And")){
+                System.out.println("\n\nERRROR : No puede comparar variables de distinto tipo " + tipo + " y " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Or")){
+                System.out.println("\n\nERRROR : No puede comparar variables de distinto tipo " + tipo + " y " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
         }
-        else{
-            System.out.println("No cumple! algrannnnnnn:(");
-            System.out.println("Línea: " + location);
-            System.exit(1); 
-            // ver distintos tipos de erores 
+        else {
+            // Casos especiales
+            if (operacion.equals("Asign")){
+                System.out.println("\n\nERRROR : No le puede asignar valores tipo " + tipo + " a una variable tipo " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("And")){
+                System.out.println("\n\nERRROR : No puede comparar variables de distinto tipo " + tipo + " y " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else if (operacion.equals("Or")){
+                System.out.println("\n\nERRROR : No puede comparar variables de distinto tipo " + tipo + " y " + tipo_pico);
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
+            else{
+                System.out.println("\n\nERRROR : Error no clasificado en el: " + tipo);
+                System.out.println("la expresion dentro del " + tipo +" no es válida.");
+                System.out.println("Linea: " + location);
+                System.exit(1);
+            }
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -738,10 +1082,3 @@ public class Semantic {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
-
-
-
-
-
-

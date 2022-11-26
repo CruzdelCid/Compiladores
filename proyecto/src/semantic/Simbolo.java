@@ -49,11 +49,75 @@ public class Simbolo{
      * @return retorna se un simbolo es función no  
      */
     public int isFunction(String identifierS){
+        int tamano = this.id.size() - 1;
+
+        for (int i = tamano; i >=0; i--){
+            if(this.identifier.get(i).equals(identifierS)){
+                return this.size.get(i);
+            }
+        }
+        
+        return 0;
+    }
+
+    /*
+     * isTypeLastFunction 
+     * @return retorna se un simbolo es función no  
+     */
+    public String isTypeLastFunction(){
+        int tamano = this.id.size() - 1;
+
+        for (int i = tamano; i >=0; i--){
+            if(this.method.get(i) == 1){
+                return this.type.get(i);
+            }
+        }
+
+        return "NO FUNCTION";
+    }
+
+    /*
+     * lastFunction 
+     * @return retorna se un simbolo es función no  
+     */
+    public String lastFunction(){
+        int tamano = this.id.size() - 1;
+
+        for (int i = tamano; i >=0; i--){
+            if(this.method.get(i) == 1){
+                return this.identifier.get(i);
+            }
+        }
+
+        return "NO FUNCTION";
+    }
+
+    /*
+     * isMain 
+     * @return retorna se un simbolo es función no  
+     */
+    public Boolean isMain(){
+        int tamano = this.id.size() - 1;
+
+        for (int i = tamano; i >=0; i--){
+            if(this.method.get(i) == 1 && this.identifier.get(i).equals("main")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /*
+     * isVector 
+     * @return retorna se un simbolo es función no  
+     */
+    public int isVector(String identifierS){
         int tamano = this.id.size() - 1; 
 
         for (int i = tamano; i >=0; i--){
             if(this.identifier.get(i).equals(identifierS)){
-                return this.method.get(i); 
+                return this.size.get(i); 
             }
         }
         return 3;
