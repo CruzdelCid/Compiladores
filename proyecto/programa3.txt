@@ -53,13 +53,14 @@ class Program {
         return daniel; 
     }
 
-    void main(){
+    int main(){
         int i; 
         int a;
         boolean bandera;
         
-        i = !2; 
-        a = a + 2 + i; 
+        i = 0 - 2; 
+        a = a + 2 + i;
+        bandera = 1 < a + 2; 
     }
 }
 
