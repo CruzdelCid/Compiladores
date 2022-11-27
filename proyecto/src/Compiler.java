@@ -5,6 +5,7 @@ import parser.ParserRunner;
 import java.util.HashMap;
 
 import ast.Ast;
+import irt.Irt;
 
 import java.io.File;
 
@@ -52,7 +53,7 @@ public class Compiler {
 
     public static void main(String[] args) {
         // parametros 
-        args = new String[] {"programa3.txt", "-target", "semantic"};
+        args = new String[] {"programa3e.txt", "-target", "irt"};
         String filename = "";         
         String instruction = ""; 
         String fase = "";
@@ -175,8 +176,13 @@ public class Compiler {
                 System.out.println("SUCCESS: Análisis gramatical realizado correctamente");
                 padre = parser.getPadre(); //guardamos el nodo padre 
             }
-
-            
+        }
+        else {
+            System.out.println("""
+                    
+                    Target: SCANNING completed!
+                    """);
+            System.exit(1);
         }
 
         // Ejecucion del ast
@@ -192,6 +198,12 @@ public class Compiler {
             }
 
             // el error handler está dentro de la clase AST 
+        }else {
+            System.out.println("""
+                    
+                    Target: PARSING completed!
+                    """);
+            System.exit(1);
         }
 
         // Ejecucion del semantic
@@ -205,13 +217,32 @@ public class Compiler {
                 System.out.println("\n>>> debuging: semantic analysis\n");
                 semant.debug();
             }
-
-            // El error handler está dentro de la clase Semantic
+        }
+        else {
+            System.out.println("""
+                    
+                    Target: AST GRAPH completed!
+                    """);
+            System.exit(1);
         }
 
         if(n >= 5){
-            
-        }// ejecutamos el ist 
+            Irt istree = new Irt(padre);
+            if(inst == 4){
+                System.out.println("\n>>> staging: ist generation\n");
+                istree.run(); 
+            }
+            else if(inst == 5){
+                System.out.println("\n>>> debuging: ist analysis\n");
+                istree.debug();
+            }
+        }else {
+            System.out.println("""
+                    
+                    Target: SCANNING completed!
+                    """);
+            System.exit(1);
+        }
 
         if(n >= 6){
             // generamos codigo 

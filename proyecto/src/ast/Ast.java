@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 
 public class Ast {
     private Nodo padre;
-    private Boolean errores; 
 
     public Ast(Nodo raiz){
         this.padre = raiz;

@@ -1,0 +1,44 @@
+class Program {
+    int a, b; 
+
+    void hola(){
+
+    }  
+    
+    int main(int k){
+        int x, h; 
+        boolean j; 
+
+        // una comparacion
+        // que se guarda en vvarieblaar temporal 
+        // asignacion a 
+        j = false == true; 
+
+        // comparacion 
+        // guardar en var temporal
+        // leer var temporal 
+        // branch
+        if(x > h){
+
+        }
+        else{
+        
+        }
+        
+        main(main());
+    }
+}
+
+
+
+
+
+// tabla parametros
+// ---------------------------
+// id  nombre  type  id_funcion 
+// 1     a      int     3 
+// 2     b      int     3 
+// 4     c      boolean 3 
+
+// peek = Boolean y el tipo Int  OK
+// peek = Int y el tipo Boolean  ERROR 
