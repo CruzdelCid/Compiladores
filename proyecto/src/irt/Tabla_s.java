@@ -37,7 +37,7 @@ public class Tabla_s {
             
             if(fila.scope == scope){
                 this.info.remove(i);
-                cantidad += 1; 
+                cantidad += 1;
             }
             else{
                 break; 

@@ -2,10 +2,13 @@ import scanner.ScannerRunner;
 import semantic.Semantic;
 import parser.Nodo;
 import parser.ParserRunner;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ast.Ast;
 import irt.Irt;
+import irt.NodoIrt;
 
 import java.io.File;
 
@@ -53,7 +56,7 @@ public class Compiler {
 
     public static void main(String[] args) {
         // parametros 
-        args = new String[] {"programa3e.txt", "-target", "irt"};
+        args = new String[] {"programa3e.txt", "-debug", "irt"};
         String filename = "";         
         String instruction = ""; 
         String fase = "";
@@ -189,11 +192,11 @@ public class Compiler {
         if(n >= 3){
             Ast graph = new Ast(padre); 
             if(inst == 4){
-                System.out.println("\n>>> staging: ast graph\n");
+                System.out.println("\n>>> staging: generating ast\n");
                 graph.run(); 
             }
             else if(inst == 5){
-                System.out.println("\n>>> debuging: ast graph\n");
+                System.out.println("\n>>> debuging: generating ast\n");
                 graph.debug();
             }
 
@@ -207,36 +210,39 @@ public class Compiler {
         }
 
         // Ejecucion del semantic
+        
         if(n >= 4){
             Semantic semant = new Semantic(padre);
             if(inst == 4){
-                System.out.println("\n>>> staging: semantic analysis\n");
+                System.out.println("\n>>> staging: analysing semantic\n");
                 semant.run(); 
             }
             else if(inst == 5){
-                System.out.println("\n>>> debuging: semantic analysis\n");
+                System.out.println("\n>>> debuging: analysing semantic\n");
                 semant.debug();
             }
         }
         else {
             System.out.println("""
                     
-                    Target: AST GRAPH completed!
+                    Target: AST GENERATED completed!
                     """);
             System.exit(1);
         }
 
+
+        ArrayList<NodoIrt> irtList; 
         if(n >= 5){
             Irt istree = new Irt(padre);
             if(inst == 4){
-                System.out.println("\n>>> staging: ist generation\n");
+                System.out.println("\n>>> staging: generating irt\n");
                 istree.run(); 
             }
             else if(inst == 5){
-                System.out.println("\n>>> debuging: ist analysis\n");
+                System.out.println("\n>>> debuging: genereting irt\n");
                 istree.debug();
             }
-            istree.print();
+            irtList = istree.getIrt(); 
         }else {
             System.out.println("""
                     

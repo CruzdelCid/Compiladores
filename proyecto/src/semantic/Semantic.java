@@ -431,29 +431,32 @@ public class Semantic {
         else if(this.field_dcl == false && nombre.equals("INT_LITERAL")){  
             //System.out.println("INT_LITERAL FOUND");
             this.tipo_var = "Int";
-            
-            if (this.operacionStack.peek().equals("For")){
-                System.out.println("\n\nERRROR : La primera expresion del for no puede ser un Int_literal, debe ser una variable de tipo int.");
-                System.out.println("Linea: " + location1);
-                System.exit(1); 
-            }
-            if (this.operacionStack.peek().equals("Vector")){
-                // dejamos pasar el int_literal
-            }
-            else{
-                this.eliminacionStack("Int", location1);
+            if (this.operacionStack.size() > 0){
+                if (this.operacionStack.peek().equals("For")){
+                    System.out.println("\n\nERRROR : La primera expresion del for no puede ser un Int_literal, debe ser una variable de tipo int.");
+                    System.out.println("Linea: " + location1);
+                    System.exit(1); 
+                }
+                if (this.operacionStack.peek().equals("Vector")){
+                    // dejamos pasar el int_literal
+                }
+                else{
+                    this.eliminacionStack("Int", location1);
+                }
             }
         }
         else if(this.field_dcl == false && nombre.equals("BOOL_LITERAL")){
             //System.out.println("BOOL_LITERAL FOUND");
             this.tipo_var = "Boolean";
 
-            if (this.operacionStack.peek().equals("For_cond")){
-                System.out.println("\n\nERRROR : La segunda expresion del for no puede ser un Bool_literal, debe ser una variable de tipo boolean.");
-                System.out.println("Linea: " + location1);
-                System.exit(1); 
+            if (this.operacionStack.size() > 0){
+                if (this.operacionStack.peek().equals("For_cond")){
+                    System.out.println("\n\nERRROR : La segunda expresion del for no puede ser un Bool_literal, debe ser una variable de tipo boolean.");
+                    System.out.println("Linea: " + location1);
+                    System.exit(1); 
+                }
+                this.eliminacionStack("Boolean", location1);
             }
-            this.eliminacionStack("Boolean", location1);
         }
 
         // operaciones condicionales 

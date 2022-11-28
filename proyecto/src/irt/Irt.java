@@ -11,12 +11,10 @@ public class Irt {
     public ArrayList<NodoIrt> irt_list;
     public String letra= "a";
     public int numero = 0;
-    public String motivo; 
 
     // Para scopes
     Stack<Integer> scopes;
     int idScopes; 
-    Stack<String> motivos; 
 
     // Para field declaration y var decl
     public Boolean field; 
@@ -35,6 +33,24 @@ public class Irt {
 
     // Para declaracion de variables 
     public Boolean var_decl; 
+
+    // Para declaracion de if
+    public Boolean banderif = false; 
+
+    /* 
+    public int numExpIf;
+    public int numBlock; 
+    public int numElseBlock; 
+    */
+
+    public Stack<Integer> AnumExpIf;
+    public Stack<Integer> AnumBlock; 
+    public Stack<Integer> AnumElseBlock;
+
+    public Stack<String> etiqueta_ifA; 
+    public Stack<String> etiqueta_elseA;
+    public Stack<String> etiqueta_endifA; 
+    
 
 
     // Tabla de simbolos 
@@ -66,17 +82,52 @@ public class Irt {
 
         // inicializacion de tablas
         this.irt_list = new ArrayList<NodoIrt>(); 
-        this.scopes = new Stack<Integer>(); 
-        this.motivos = new Stack<String>(); 
+        this.scopes = new Stack<Integer>();
 
-        this.motivo = "Creacion"; 
+        this.AnumExpIf = new Stack<Integer>();
+        this.AnumBlock = new Stack<Integer>();
+        this.AnumElseBlock = new Stack<Integer>(); 
+
+        this.etiqueta_ifA = new Stack<String>(); 
+        this.etiqueta_elseA = new Stack<String>();
+        this.etiqueta_endifA = new Stack<String>();
 
         this.idScopes = 0; 
         this.recorrer(this.padre);
+
+
+        System.out.println("SUCCESS: IRT generado correctamente.");
     }
 
     public void debug(){
-        this.run(); 
+        // banderas
+        this.field = false; 
+        this.method = false;
+        this.m_decl = false; 
+        this.var_decl = false; 
+
+        // incializacion tablas
+        this.tabla_sim = new Tabla_s(); 
+        this.tabla_meth = new Tabla_m(); 
+        this.tabla_param = new Tabla_p(); 
+
+        // inicializacion de tablas
+        this.irt_list = new ArrayList<NodoIrt>(); 
+        this.scopes = new Stack<Integer>();
+
+        this.AnumExpIf = new Stack<Integer>();
+        this.AnumBlock = new Stack<Integer>();
+        this.AnumElseBlock = new Stack<Integer>(); 
+
+        this.etiqueta_ifA = new Stack<String>(); 
+        this.etiqueta_elseA = new Stack<String>();
+        this.etiqueta_endifA = new Stack<String>();
+
+        this.idScopes = 0; 
+        this.recorrer(this.padre);
+
+        this.print();
+        System.out.println("SUCCESS: IRT generado correctamente.");
     }
 
 
@@ -86,6 +137,23 @@ public class Irt {
         this.numero += 1; 
 
         return nueva;
+    }
+
+    public int numeroIf = 0; 
+    public String generadorIf(){
+        this.numeroIf += 1;
+        String nueva = "if" + numeroIf + "_"; 
+        return nueva; 
+    }
+
+    public String generadorElse(){
+        String nueva = "else" + numeroIf + "_"; 
+        return nueva; 
+    }
+
+    public String generadorEndIf(){
+        String nueva = "end" + numeroIf + "_"; 
+        return nueva; 
     }
 
 
@@ -152,8 +220,7 @@ public class Irt {
         // creacion de un método
         else if(name.equals("METHOD_DECL")){
             this.method = true;
-            this.param_position = 0; 
-            this.motivo = "Metodo"; 
+            this.param_position = 1; 
         }
         else if(this.method && (name.equals("Int") || name.equals("Boolean") || name.equals("Void"))){
             this.type_method = padre.getValor(); 
@@ -174,11 +241,8 @@ public class Irt {
             // se agrega un nuevo scope 
             this.idScopes += 1; 
 
-
-            
             this.m_decl = true;
             this.scopes.add(this.idScopes); 
-            this.motivos.add(this.motivo); 
         }
 
 
@@ -299,51 +363,37 @@ public class Irt {
         else if(this.m_decl == false && name.equals("LeftKey")){
             this.idScopes += 1; 
             this.scopes.add(this.idScopes);
-            this.motivos.add(this.motivo); 
         }
 
         // eliminacion de un scope 
         else if(name.equals("RightKey")){
             int scope = this.scopes.pop();
-            String motivo_scope = this.motivos.pop(); 
 
-            System.out.println("\n\nVista Scope: " + scope);
-            this.tabla_sim.print(); 
-            this.tabla_meth.print(); 
-            this.tabla_param.print();
+            //System.out.println("\n\nVista Scope: " + scope);
+            // this.tabla_sim.print(); 
+            // this.tabla_meth.print(); 
+            // this.tabla_param.print();
 
+        }
+        else if(name.equals("STATEMENT")){
+            if(padre.getHijos().size() == 6){
 
-            if(motivo_scope.equals("Metodo")){
-                // cantidad de variables eliminadas 
-                this.tabla_sim.pullScope(scope);
+                this.banderif = true; 
+                /*
+                this.numExpIf = padre.getHijos().get(2).getNumNodo();
+                this.numBlock = padre.getHijos().get(4).getNumNodo();
+                this.numElseBlock = padre.getHijos().get(5).getNumNodo();
+                */
 
-                NodoIrt nodo = new NodoIrt(); 
-                nodo.operacion = "MethodFin";
-                this.irt_list.add(nodo); 
-                // nodo.size = tamano; 
-                // nodo.bytes = tamano * 4; 
-
+                this.AnumExpIf.add(padre.getHijos().get(2).getNumNodo()); 
+                this.AnumBlock.add(padre.getHijos().get(4).getNumNodo());
+                this.AnumElseBlock.add(padre.getHijos().get(5).getNumNodo());
             }
-            else if(motivo_scope.equals("Creacion")){
-                NodoIrt nodo = new NodoIrt(); 
-                nodo.operacion = "CreacionFin";
-                this.irt_list.add(nodo); 
-                this.tabla_sim.pullScope(scope);
-            } 
-            else {
-                this.tabla_sim.pullScope(scope);
-            }
-
-
-             
-
-            
         }
 
 
-        
-        // System.out.println(this.irt_list);
-
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // recorrido de los hijos; 
         ArrayList<Nodo> hijos = padre.getHijos();
         for (Nodo hijo : hijos){
@@ -351,10 +401,23 @@ public class Irt {
                 recorrer(hijo); 
             }
         }
-
+        // System.out.println(padre.getNumNodo() + " : " + padre.getNombre());
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // formas recursivas 
-        if(this.field == false && name.equals("DecimalLiteral")){
+        if(name.equals("METHOD_DECL")){
+            NodoIrt nodo = new NodoIrt(); 
+            nodo.operacion = "MethodFin";
+
+            this.irt_list.add(nodo);
+        }
+        else if(name.equals("INICIO")){
+            NodoIrt nodo = new NodoIrt(); 
+            nodo.operacion = "CreacionFin";
+            this.irt_list.add(nodo);
+        }
+        else if(this.field == false && name.equals("DecimalLiteral")){
             NodoIrt nodo = new NodoIrt(); 
             nodo.operacion = "DecimalLiteral";
             nodo.var_store = this.generador(); 
@@ -451,6 +514,115 @@ public class Irt {
             Nodo hijo = padre.getHijos().get(0); 
             padre.resultado = hijo.getNombre(); 
         }
+        else if (name.equals("METHOD_CALL_EXPR")){
+            if(padre.getHijos().size() == 3){
+                Integer cantidad = Integer.parseInt(padre.getHijos().get(2).resultado); 
+                cantidad += 1;
+                
+                
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "METHOD_CALL_EXPR";
+                nodo.var_call = padre.getHijos().get(0).resultado; 
+                nodo.position_call = cantidad;
+
+                this.irt_list.add(nodo);
+
+                padre.resultado = cantidad.toString();                 
+            }
+            else {
+                Integer cantidad = 1;                 
+                
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "METHOD_CALL_EXPR";
+                nodo.var_call = padre.getHijos().get(0).resultado; 
+                nodo.position_call = cantidad;
+
+                this.irt_list.add(nodo);
+
+                padre.resultado = cantidad.toString();    
+            }
+        }
+        else if(name.equals("METHOD_NAME")){
+            padre.resultado = padre.getHijos().get(0).getValor();
+        }
+
+        else if (name.equals("METHOD_CALL")){
+            if(padre.getHijos().size() == 3){
+                Integer cantidad = Integer.parseInt(padre.getHijos().get(2).resultado);
+
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "METHOD_CALL";
+                nodo.etiqueta_call = padre.getHijos().get(0).resultado; 
+                nodo.cantidad_params_call = cantidad;
+                nodo.var_result = generador();  
+
+                this.irt_list.add(nodo);
+            }
+            else {
+                Integer cantidad = 0;
+
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "METHOD_CALL";
+                nodo.etiqueta_call = padre.getHijos().get(0).resultado; 
+                nodo.cantidad_params_call = cantidad;
+                nodo.var_result = generador();  
+
+                this.irt_list.add(nodo);
+            }
+        }
+        
+
+        if(this.AnumExpIf.size() >0){
+            if (padre.getNumNodo() == this.AnumExpIf.peek()){
+                String var_cond = padre.resultado; 
+                
+                // generador de etiquetas, solo se usa una vez 
+                this.etiqueta_ifA.add(generadorIf()); 
+                this.etiqueta_elseA.add(generadorElse()); 
+                this.etiqueta_endifA.add(generadorEndIf()); 
+                
+                // creacion de operacion If
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "If_statement";
+                nodo.var_cond = var_cond; 
+                nodo.etiqueta_if = this.etiqueta_ifA.peek(); 
+                nodo.etiqueta_else = this.etiqueta_elseA.peek(); 
+                nodo.etiqueta_endif = this.etiqueta_endifA.peek(); 
+    
+                this.irt_list.add(nodo);
+            }
+            if (padre.getNumNodo() == this.AnumBlock.peek()){
+                
+
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "Else_statement";
+                nodo.etiqueta_else = this.etiqueta_elseA.peek(); 
+                nodo.etiqueta_endif = this.etiqueta_endifA.peek(); 
+    
+                this.irt_list.add(nodo);
+            }
+            if (padre.getNumNodo() == this.AnumElseBlock.peek()){
+                
+                NodoIrt nodo = new NodoIrt(); 
+                nodo.operacion = "Endif_statement";
+                nodo.etiqueta_endif = this.etiqueta_endifA.peek(); 
+
+                // eliminacion de los numeros de nodo 
+                this.AnumExpIf.pop(); 
+                this.AnumBlock.pop(); 
+                this.AnumElseBlock.pop(); 
+
+                // eliminacion de las etiquetas
+                this.etiqueta_ifA.pop(); 
+                this.etiqueta_elseA.pop(); 
+                this.etiqueta_endifA.pop();
+                
+                this.irt_list.add(nodo);
+                this.banderif = false; 
+            }
+
+
+        }
         
 
         return 1; 
@@ -521,6 +693,36 @@ public class Irt {
                 System.out.println("var_store: " + i.var_store);
                 System.out.println("value: " + i.value);
             }
+            else if(i.operacion.equals("If_statement")){
+                System.out.println("Operacion: " + i.operacion);
+                System.out.println("var_cond: "+ i.var_cond);
+                System.out.println("etiqueta_if: "+ i.etiqueta_if);
+                System.out.println("etiqueta_else: "+ i.etiqueta_else);
+                System.out.println("etiqueta_endif: "+ i.etiqueta_endif);
+
+            }
+            else if(i.operacion.equals("Else_statement")){
+                System.out.println("Operacion: " + i.operacion);
+                System.out.println("etiqueta_else: "+ i.etiqueta_else);
+                System.out.println("etiqueta_endif: "+ i.etiqueta_endif);
+
+            }
+            else if(i.operacion.equals("Endif_statement")){
+                System.out.println("Operacion: " + i.operacion);
+                System.out.println("etiqueta_endif: "+ i.etiqueta_endif);
+            }
+            else if(i.operacion.equals("METHOD_CALL_EXPR")){
+                System.out.println("Operacion: " + i.operacion);
+                System.out.println("var_call: " + i.var_call);
+                System.out.println("position_call: " + i.position_call);
+            }
+            else if(i.operacion.equals("METHOD_CALL")){
+                System.out.println("Operacion: " + i.operacion);
+                System.out.println("etiqueta_call: " + i.etiqueta_call);
+                System.out.println("cantidad_params_call: " + i.cantidad_params_call);
+                System.out.println("var_result: " + i.var_result);
+            }
+            
             else {
                 System.out.println("Operacion: " + i.operacion);
             }

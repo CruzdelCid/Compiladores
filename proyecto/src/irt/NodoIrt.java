@@ -33,8 +33,20 @@ public class NodoIrt {
     public String var_entrada; 
     public String var_salida; 
 
+    // creacion de un if 
+    public String var_cond;
+    public String etiqueta_if;
+    public String etiqueta_else; 
+    public String etiqueta_endif;
 
-    // eliminacion de un metodo; 
+    // creacion de method call variables
+    public String var_call;
+    public int position_call; 
+
+    // creacion method call 
+    public String etiqueta_call; 
+    public int cantidad_params_call;
+    public String var_result;  
 
 
     // 
