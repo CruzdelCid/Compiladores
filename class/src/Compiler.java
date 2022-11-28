@@ -5,6 +5,7 @@ import parser.ParserRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import ast.Ast;
 import irt.Irt;
@@ -55,8 +56,14 @@ public class Compiler {
     """;
 
     public static void main(String[] args) {
+        // input 
+        Scanner entrada = new Scanner(System.in);
+        String input = entrada.nextLine();
+        args = input.split(" ");
+        entrada.close();
+
         // parametros 
-        args = new String[] {"programa3e.txt", "-debug", "irt"};
+        // args = new String[] {"programa3e.txt", "-debug", "irt"};
         String filename = "";         
         String instruction = ""; 
         String fase = "";

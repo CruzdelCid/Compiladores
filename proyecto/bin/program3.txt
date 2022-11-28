@@ -1,9 +1,0 @@
-class Program {
-    int guapo, bandera [2], bandera [2], bandera [2]; 
-    void funcion(int l, int j) {
-        int a;
-        a = 35;
-        c = 'a';
-        c = l+j; 
-    }
-}

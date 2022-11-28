@@ -1,6 +1,5 @@
 class Program {
     int a;
-    
     int retornacion (int a, int b){
         return a;
     }

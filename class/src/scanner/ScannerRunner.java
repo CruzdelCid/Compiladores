@@ -16,7 +16,7 @@ public class ScannerRunner {
 
         try {
             Path path = Paths.get("");
-            String ruta = path.toAbsolutePath().toString() + "/program.txt";
+            String ruta = path.toAbsolutePath().toString() + "/" + filename;
             char n = (char) 92; 
             ruta = ruta.replace(n, '/');
             this.lector = new BufferedReader(new FileReader(ruta));
@@ -54,7 +54,8 @@ public class ScannerRunner {
                 }
             }
         } catch (Exception ex) {
-            // Logger.getLogger(FrmPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("ERROR: El archivo no fue encontrado.");
+            System.exit(1);
         }
     }
 

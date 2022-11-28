@@ -1,6 +1,6 @@
 package irt;
 
-// informacion de fila de la tabla de simbolos 
+// informacion de fila de la tabla de metodos
 public class Fila_m {
     public int id; 
     public String name;
