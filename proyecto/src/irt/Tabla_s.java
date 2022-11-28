@@ -28,30 +28,34 @@ public class Tabla_s {
         return fila;
     }
 
-    public void pullScope(int scope){
+    public int pullScope(int scope){
         int end = this.info.size() - 1; 
+        int cantidad = 0;
 
         for(int i = end; i >= 0; i--){
             Fila_s fila = info.get(i);
             
             if(fila.scope == scope){
                 this.info.remove(i);
+                cantidad += 1; 
             }
             else{
                 break; 
             }
         }
         System.out.println("Scope <<" + scope + ">> eliminando.");
+
+        return cantidad; 
     }
 
     public void print(){
         int end = this.info.size(); 
         System.out.println("TABLA DE SIMBOLOS");
-        System.out.format("%3s %7s %7s %5s %5s\n","Id", "Name", "Type", "Scope", "Size");
+        System.out.format("%3s %7s %7s %5s %5s %5s\n","Id", "Name", "Type", "Scope", "Size", "Field");
         System.out.println("-------------------------------");
         for(int i = 0; i < end; i ++){
             Fila_s fila = info.get(i);
-            System.out.format("%3d %7s %7s %5d %5d\n", fila.id, fila.name, fila.type, fila.scope, fila.size);
+            System.out.format("%3d %7s %7s %5d %5d %5d\n", fila.id, fila.name, fila.type, fila.scope, fila.size, fila.field);
         }
         System.out.println("");
     }

@@ -8,8 +8,8 @@ public class Tabla_p {
         this.info = new ArrayList<Fila_p>();   
     }
 
-    public void nuevaFila(String name, String type){
-        Fila_p fila = new Fila_p(name, type); 
+    public void nuevaFila(int param_position, String var_name, String name, String type){
+        Fila_p fila = new Fila_p(param_position, var_name, name, type); 
         this.info.add(fila);
     }
 

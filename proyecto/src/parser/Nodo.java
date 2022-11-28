@@ -10,6 +10,7 @@ public class Nodo {
     private String identifier; 
     private int location;
     private ArrayList<Nodo> hijos;
+    public String resultado; 
     
     public Nodo(String nombre)
     {

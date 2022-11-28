@@ -236,6 +236,7 @@ public class Compiler {
                 System.out.println("\n>>> debuging: ist analysis\n");
                 istree.debug();
             }
+            istree.print();
         }else {
             System.out.println("""
                     

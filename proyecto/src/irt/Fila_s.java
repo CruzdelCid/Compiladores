@@ -15,6 +15,6 @@ public class Fila_s {
         this.type = type;
         this.scope = scope;
         this.size = size; 
-        this.field = size; 
+        this.field = field; 
     }
 }
