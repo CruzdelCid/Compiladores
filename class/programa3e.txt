@@ -1,7 +1,14 @@
 class Program {
     int a;
     int retornacion (int a, int b){
-        return a;
+
+        if (a > b){
+            b = 0;
+        }
+        else {
+            a = 0; 
+        }
+        return a + b;
     }
 
     int sin(){
@@ -17,8 +24,6 @@ class Program {
         b = 2;  
 
         k = retornacion(1, 1); 
-
-
         k = sin(); 
     }
 }
