@@ -1,4 +1,10 @@
-﻿**Documentación**
+# Compilador Decaf
+
+### Creadores: 
+- Cruz del Cid [CruzdelCid](https://github.com/CruzdelCid)
+- Daniel Behar [dan-behar](https://github.com/dan-behar)
+
+# **Documentación**
 
 El objetivo de este proyecto es poder realizar un compilador del lenguaje Decaf en Java. Este documento contiene la estructura de los directorios creados hasta la presente fase (que en este caso es **irt**). También, contiene una descripción de qué realiza cada clase creada, junto con las librerías adicionales empleadas. Concluye con un set de instrucciones para correr el compilador desde el CMD o una línea de comandos similar. La fase de esta segunda entrega abarca solamente el irt funcional, conectado con el CLI del compilador.
 
