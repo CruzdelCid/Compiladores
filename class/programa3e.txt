@@ -1,30 +1,12 @@
 class Program {
-    int a;
-    int retornacion (int a, int b){
 
-        if (a > b){
-            b = 0;
-        }
-        else {
-            a = 0; 
-        }
-        return a + b;
+    int do(int r){
+        return true;
     }
 
-    int sin(){
-        return a; 
-    }
-
-
-    int main(int k){
-        int a; 
-        int b;
-
-        a = 1; 
-        b = 2;  
-
-        k = retornacion(1, 1); 
-        k = sin(); 
+    int main(int j){
+        boolean bandera; 
+        j = do(bandera);
     }
 }
 
